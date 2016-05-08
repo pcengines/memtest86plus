@@ -38,7 +38,7 @@
 /*	This is normally off since it slows down testing.  Change to a 1 */
 /*	to enable. */
 #ifndef SERIAL_CONSOLE_DEFAULT
-#define SERIAL_CONSOLE_DEFAULT 0
+#define SERIAL_CONSOLE_DEFAULT 1
 #endif
 
 /* SERIAL_TTY - The default serial port to use. 0=ttyS0, 1=ttyS1, 2=ttyS2, 3=ttyS3 */
