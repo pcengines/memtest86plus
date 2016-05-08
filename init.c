@@ -300,7 +300,7 @@ void init(void)
 		cprint(LINE_RAM, COL_SPEC, "   No detection, same reliability   ");
 	} else {
 		find_controller();
-		get_spd_spec();
+		//get_spd_spec();
 		if (num_cpus <= 16 && !(v->fail_safe & 4)) { coretemp(); }
 	}
 
