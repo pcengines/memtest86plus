@@ -4,12 +4,15 @@
  * http://www.canardpc.com - http://www.memtest.org
  */
 
+#include "spd.h"
+
+#ifndef SPD_DISABLED
+
 #include "stdint.h"
 #include "test.h"
 #include "io.h"
 #include "pci.h"
 #include "msr.h"
-#include "spd.h"
 #include "screen_buffer.h"
 #include "jedec_id.h"
 
@@ -333,8 +336,11 @@ static int get_ddr2_module_size(int rank_density_byte, int rank_num_byte)
 
 }
 
+#endif
+
 void get_spd_spec(void)
 {
+#ifndef SPD_DISABLED
     int index;
     int h, i, j, z;
     int k = 0;
@@ -509,11 +515,13 @@ void get_spd_spec(void)
 			k++;
 			}
     }
+#endif
 }
 
 
 void show_spd(void)
 {
+#ifndef SPD_DISABLED
     int index;
     int i, j;
     int flag = 0;
@@ -540,6 +548,7 @@ void show_spd(void)
 	    wait_keyup();
 	}
     }
+#endif
 }
 
 struct ascii_map {
