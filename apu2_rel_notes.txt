@@ -1,0 +1,15 @@
+*******************************************************
+            PCENGINES memtest86plus Release Notes
+*******************************************************
+
+Release notes describing changes made to memtest86plus related to apu2 support
+
+11 MAY 2016
+
+ * Macro (SPD_DISABLED) for disabling SPD related functionality was added spd.h
+   This macro should be used when building memtest for apu2 platform
+   
+ * Fix for display refresh. 
+   Refresh option label ('l') was added to aplication bottom menu and refresh procedure
+   was fixed so that full screen content is reprinted on refresh.
+  
