@@ -10,6 +10,7 @@
 #include "test.h"
 #include "screen_buffer.h"
 #include "dmi.h"
+#include "spd.h"
 
 extern int bail, beepmode;
 extern struct tseq tseq[];
