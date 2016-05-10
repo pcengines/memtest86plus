@@ -656,7 +656,7 @@ void check_input(void)
 
 void footer(void)
 {
-	cprint(24, 0, "(ESC)exit  (c)configuration  (SP)scroll_lock  (CR)scroll_unlock");
+	cprint(24, 0, "(ESC)exit  (c)configuration  (SP)scroll_lock  (CR)scroll_unlock (l)refresh");
 	if (slock) {
 		cprint(24, 74, "Locked");
 	} else {
