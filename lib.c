@@ -648,8 +648,7 @@ void check_input(void)
 			break;
 		case 0x26:
 			/* ^L/L - redraw the display */
-		        clear_screen_buf();
-			tty_print_region(0, 0, 80, 100);
+			tty_print_screen();
 			break;
 		}
 	}
@@ -657,7 +656,7 @@ void check_input(void)
 
 void footer(void)
 {
-	cprint(24, 0, "(ESC)exit  (c)configuration  (SP)scroll_lock  (CR)scroll_unlock");
+	cprint(24, 0, "(ESC)exit  (c)configuration  (SP)scroll_lock  (CR)scroll_unlock (l)refresh");
 	if (slock) {
 		cprint(24, 74, "Locked");
 	} else {
