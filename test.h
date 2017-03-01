@@ -180,7 +180,6 @@ void parity_err(ulong edi, ulong esi);
 void start_config(void);
 void clear_screen(void);
 void paging_off(void);
-void show_spd(void);
 int map_page(unsigned long page);
 void *mapping(unsigned long page_address);
 void *emapping(unsigned long page_address);
