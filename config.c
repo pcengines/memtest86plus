@@ -10,6 +10,7 @@
 #include "test.h"
 #include "screen_buffer.h"
 #include "dmi.h"
+#include "spd.h"
 
 extern int bail, beepmode;
 extern struct tseq tseq[];
@@ -46,7 +47,9 @@ void get_config(void)
 		cprint(POP_Y+6,  POP_X+6, "(4) Core Selection");
 		cprint(POP_Y+7,  POP_X+6, "(5) Refresh Screen");
 		cprint(POP_Y+8,  POP_X+6, "(6) Display DMI Data");
+#ifndef SPD_DISABLED
 		cprint(POP_Y+9,  POP_X+6, "(7) Display SPD Data");
+#endif
 		cprint(POP_Y+11, POP_X+6, "(0) Continue");
 
 		/* Wait for key release */

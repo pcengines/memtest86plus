@@ -74,3 +74,7 @@
 
 /* Location of flashing '+' symbol */
 #define MEMTEST_PLUS_LOCATION 9
+
+/* SPD_DISABLED - disabled SPD data reading and usage
+*/
+//#define SPD_DISABLED
