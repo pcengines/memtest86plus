@@ -4,12 +4,16 @@
  * http://www.canardpc.com - http://www.memtest.org
  */
 
+#include "spd.h"
+#include "config.h"
+
+#if !(CB_NOSPD)
+
 #include "stdint.h"
 #include "test.h"
 #include "io.h"
 #include "pci.h"
 #include "msr.h"
-#include "spd.h"
 #include "screen_buffer.h"
 #include "jedec_id.h"
 
@@ -546,3 +550,20 @@ char* convert_hex_to_char(unsigned hex_org) {
 
         return buf;
 }
+#else // CB_NOSPD
+
+void show_spd(void)
+{
+	//
+	// Empty implementation if there is no SPD available
+	//
+}
+
+void get_spd_spec()
+{
+	//
+	// Empty implementation if there is no SPD available
+	//
+}
+
+#endif
