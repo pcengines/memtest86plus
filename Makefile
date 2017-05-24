@@ -29,6 +29,10 @@ ifneq ($(SERIAL_TTY),)
 	CFLAGS += -DSERIAL_TTY=$(SERIAL_TTY)
 endif
 
+ifneq ($(CB_NOSPD),)
+	CFLAGS += -DCB_NOSPD=$(CB_NOSPD)
+endif
+
 # This reverts a change introduced with recent binutils (post
 # http://sourceware.org/bugzilla/show_bug.cgi?id=10569).  Needed to
 # ensure Multiboot header is within the limit offset.
