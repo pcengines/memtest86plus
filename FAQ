@@ -29,7 +29,7 @@
 
   There are several ways to use memtest, which are described below:
 
-  + Run from floppydisk
+  + Run from floppy disk
 
     Memtest86+ is directly executable by any modern x86 compatible machine, by
     writing the bootable binary to a floppy disk one can boot from the disk to
@@ -51,7 +51,7 @@
     machine.
 
     Your machine should now boot from the disk, display the word Loading
-    folowed by a series of periods and then show a screen much like the
+    followed by a series of periods and then show a screen much like the
     screenshots on the memtest86+ web page. The test is automatically started.
 
     If your machine simply boots back into Windows/Linux you will most likely
@@ -59,13 +59,13 @@
     startup, refer to your computer's/mainboard's manual how to do this.
 
     When you are done testing simply remove the floppy and reset your
-    computer, if ever you want to execure the test again simply reinsert the
+    computer, if ever you want to execute the test again simply reinsert the
     disk and reboot/start your computer.
 
   + Run from CD
 
     Memtest86+ is directly executable by any modern x86 compatible machine, by
-    writing the iso to a CD one can boot from the CD to run memtest.
+    writing the ISO to a CD one can boot from the CD to run memtest.
 
     Simply download the appropriate package, the Download - Pre-Compiled
     Bootable ISO (.gz) for Linux users and the Pre-Compiled Bootable ISO
@@ -75,21 +75,21 @@
     now see a file called memtest86+-1.xx.iso in this directory. You will need
     to burn this file to a CD with a CD recording program. Do note however
     that you should not make a regular data CD on which you for instance write
-    your text documents and holiday photographs. Instead the iso file is a so
+    your text documents and holiday photographs. Instead the ISO file is a so
     called image of a CD, it is a direct copy of a CD. Your CD recording
     program will most likely have a feature called burn image or something to
     that effect which you should use to burn the CD.
 
-    For linux, unzip the package into your home directory. and execute
+    For Linux, unzip the package into your home directory. and execute
     'cdrecord dev=<your burner> ~/memtest86+-1.xx.iso' where you replace <your
-    burner> with the scsi address of your CD burner and replace 1.xx with the
+    burner> with the SCSI address of your CD burner and replace 1.xx with the
     correct version number of the memtest86+ your downloaded.
 
     When the burning completed your drive will most likely have ejected the CD
     and you should have a bootable memtest86+ CD. To run the test directly
     reinsert the CD and reboot your machine.
 
-    Your machine should now boot from the CD, display the word Loading folowed
+    Your machine should now boot from the CD, display the word Loading followed
     by a series of periods and then show a screen much like the screenshots on
     the memtest86+ web page. The test is automatically started.
 
@@ -98,7 +98,7 @@
     startup, refer to your computer's/mainboard's manual how to do this.
 
     When you are done testing simply remove the CD and reset your computer, if
-    ever you want to execure the test again simply reinsert the CD and
+    ever you want to execute the test again simply reinsert the CD and
     reboot/start your computer.
 
   + Run from USB Flash drive
@@ -111,7 +111,7 @@
 
 - How long does memtest86+ run? How do I stop it?
 
-  Memtest86+ runs indefinately unless you stop it. It does however repeat the
+  Memtest86+ runs indefinitely unless you stop it. It does however repeat the
   same tests over and over again. Memtest86+ contains a number of different
   tests which each take different approaches in trying to expose any errors in
   your memory. In the top right of your screen you can see the progress of
@@ -206,7 +206,7 @@
   Interpreting memtest results is as scientific an endeavour as testing
   whether a person is a witch by the methods used in Monty Python's Holy
   Grail. In short, don't even start, it's not going to get you anywhere. Just
-  interpret any error as you should any other and use the methods descibed in
+  interpret any error as you should any other and use the methods described in
   the previous question to determine the cause.
 
 - I'm getting errors in test #5 and/or #8 and have read a lot about it.
@@ -225,8 +225,8 @@
 
   It can mean one of two things:
     - The machine that is giving the errors is defective. Errors don't just
-      orginate from the memory module itself, but can also be caused by
-      defects in the cpu, chipset, motherboard, PSU and even by timing issues
+      originate from the memory module itself, but can also be caused by
+      defects in the CPU, chipset, motherboard, PSU and even by timing issues
       introduced by any other component in the machine.
     - The machine giving the errors is imposing stricter timing than the other
       which the memory module simply can't cope with. If the module should
@@ -236,7 +236,7 @@
 - Which memory is tested?
 
   As much as possible of the system memory is tested. Unfortunately memtest86+
-  can usually not test all of the memory. The reason for this is that todays
+  can usually not test all of the memory. The reason for this is that today's
   processors have become so complex that they require a small amount of memory
   to keep accounting data of the processor state. If memtest were to write
   over these areas the state of the processor becomes invalid and it's
@@ -253,7 +253,7 @@
 
 - When I select BIOS-ALL I get many errors / my machine crashes.
 
-  This is normal. With todays computers this option should never be selected.
+  This is normal. With today's computers this option should never be selected.
   See the previous question about the reason for the errors.
 
 - I want to use memtest on a multiboot CD, how do I do this?
@@ -267,16 +267,16 @@
   -isolinux
 
     For general instructions on how to make a bootable CD with isolinux see
-    the syslinux website and the manual. What you need to do to get memtest
+    the Syslinux website and the manual. What you need to do to get memtest
     working is as follows.
 
     Download the Pre-Compiled Bootable Binary, the .gz if you are working
-    under linux, the .zip if you are working under windows. Unpack the file
+    under Linux, the .zip if you are working under windows. Unpack the file
     from the package and rename it to an 8.3 filename with an extension other
     than .bin, renaming to memtest. (without an extension) is a good choice.
 
     Put the file somewhere in your CD directory structure, for example in
-    images/memtest and edit your config file to include the following:
+    images/memtest and edit your configuration file to include the following:
 
     label memtest
         kernel /images/memtest
@@ -299,7 +299,7 @@
   error will go unnoticed. As long as you are having no problems with the
   system it will be pretty safe to say that the modules are good. If you are
   having problems with the system however you will just have to check by trial
-  and error, ie swapping the modules for new ones and/or testing with modules
+  and error, i.e. swapping the modules for new ones and/or testing with modules
   of a different brand/type.
 
 - When I run install.bat it doesn't write anything to floppy.
@@ -307,4 +307,4 @@
   You most likely have unpacked the memtest+-2.xx.floppy.zip file into a
   folder with a long pathname and/or containing + and - signs. It seems
   rawrite doesn't like that. Just move the files you unpacked to a directory
-  like c:\memtest and execure it from there.
+  like c:\memtest and execute it from there.
