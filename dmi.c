@@ -251,16 +251,19 @@ void print_dmi_startup_info(void)
 	char *string3;
 	int dmicol = 78;
 	int slenght;
-	int sl1, sl2, sl3;
+	int sl1 = 0, sl2 = 0, sl3 = 0;
 
 	if(!dmi_initialized) { init_dmi(); }
 
 	string1 = get_tstruct_string(&dmi_system_info->header,dmi_system_info->manufacturer);
-	sl1 = strlen(string1);
+	if (string1)
+		sl1 = strlen(string1);
 	string2 = get_tstruct_string(&dmi_system_info->header,dmi_system_info->productname);
-	sl2 = strlen(string2);
+	if (string2)
+		sl2 = strlen(string2);
 	string3 = get_tstruct_string(&dmi_cpu_info->header,dmi_cpu_info->cpu_socket);
-	sl3 = strlen(string3);
+	if (string3)
+		sl3 = strlen(string3);
 
 	slenght = sl1 + sl2;
 	if(sl3 > 2) { slenght += sl3 + 4; } else { slenght++; }
