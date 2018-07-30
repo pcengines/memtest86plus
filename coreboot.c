@@ -123,7 +123,8 @@ static struct lb_header * find_lb_table(void)
 		/* if there is, all valid information is in the
 		 * referenced coreboot table
 		 */
-		head = __find_lb_table(forward->forward, 0x1000);
+		head = __find_lb_table(forward->forward,
+				       forward->forward + 0x1000);
 	}
 
 	return head;
