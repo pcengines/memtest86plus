@@ -26,15 +26,22 @@
 #define AMD_SMBUS_BASE_REG	0x2C
 #define AMD_PM_DECODE_EN_REG	0x00
 
-static int get_ddr2_module_size(int rank_density_byte, int rank_num_byte);
-static char *convert_hex_to_char(unsigned hex_org);
-static void sb800_get_smb(void);
-static int get_ddr3_module_size(int sdram_capacity, int prim_bus_width,
-				int sdram_width, int ranks);
-
 static int smbdev, smbfun;
 static unsigned short smbusbase;
 static unsigned char spd_raw[256];
+
+static char *convert_hex_to_char(unsigned hex_org)
+{
+	static char buf[2] = " ";
+	if (hex_org >= 0x20 && hex_org < 0x80) {
+		buf[0] = hex_org;
+	} else {
+		//buf[0] = '\0';
+		buf[0] = ' ';
+	}
+
+	return buf;
+}
 
 static void ich5_get_smb(void)
 {
@@ -43,24 +50,6 @@ static void ich5_get_smb(void)
 	result = pci_conf_read(0, smbdev, smbfun, 0x20, 2, &x);
 	if (result == 0)
 		smbusbase = (unsigned short)x & 0xFFFE;
-}
-
-static void piix4_get_smb(void)
-{
-	unsigned long x;
-	int result;
-
-	result = pci_conf_read(0, smbdev, smbfun, 0x08, 1, &x);
-
-	if (x < 0x40) {
-		// SB600/700
-		result = pci_conf_read(0, smbdev, smbfun, 0x90, 2, &x);
-		if (result == 0)
-			smbusbase = (unsigned short)x & 0xFFFE;
-	} else {
-		// SB800
-		sb800_get_smb();
-	}
 }
 
 static void sb800_get_smb(void)
@@ -93,6 +82,24 @@ static void sb800_get_smb(void)
 
 	if (smbusbase == 0xFFE0) {
 		smbusbase = 0;
+	}
+}
+
+static void sb600_get_smb(void)
+{
+	unsigned long x;
+	int result;
+
+	result = pci_conf_read(0, smbdev, smbfun, 0x08, 1, &x);
+
+	if (x < 0x40) {
+		// SB600/700
+		result = pci_conf_read(0, smbdev, smbfun, 0x90, 2, &x);
+		if (result == 0)
+			smbusbase = (unsigned short)x & 0xFFFE;
+	} else {
+		// SB800
+		sb800_get_smb();
 	}
 }
 
@@ -216,7 +223,7 @@ static struct pci_smbus_controller smbcontrollers[] = {
 	{0x8086, 0x0f12, "Intel E3800", ich5_get_smb, ich5_read_spd},
 
 	// AMD SMBUS
-	{0x1002, 0x4385, "AMD SB600/700", piix4_get_smb, ich5_read_spd},
+	{0x1002, 0x4385, "AMD SB600/700", sb600_get_smb, ich5_read_spd},
 	{0x1022, 0x780B, "AMD SB800/900", sb800_get_smb, ich5_read_spd},
 	{0, 0, "", NULL, NULL}
 };
@@ -242,6 +249,112 @@ static int find_smb_controller(void)
 		}
 	}
 	return -1;
+}
+
+
+static int get_ddr3_module_size(int sdram_capacity, int prim_bus_width,
+				int sdram_width, int ranks)
+{
+	int module_size;
+
+	switch (sdram_capacity) {
+	case 0:
+		module_size = 256;
+		break;
+	case 1:
+		module_size = 512;
+		break;
+	default:
+	case 2:
+		module_size = 1024;
+		break;
+	case 3:
+		module_size = 2048;
+		break;
+	case 4:
+		module_size = 4096;
+		break;
+	case 5:
+		module_size = 8192;
+		break;
+	case 6:
+		module_size = 16384;
+		break;
+	}
+
+	module_size /= 8;
+
+	switch (prim_bus_width) {
+	case 0:
+		module_size *= 8;
+		break;
+	case 1:
+		module_size *= 16;
+		break;
+	case 2:
+		module_size *= 32;
+		break;
+	case 3:
+		module_size *= 64;
+		break;
+	}
+
+	switch (sdram_width) {
+	case 0:
+		module_size /= 4;
+		break;
+	case 1:
+		module_size /= 8;
+		break;
+	case 2:
+		module_size /= 16;
+		break;
+	case 3:
+		module_size /= 32;
+		break;
+	}
+
+	module_size *= (ranks + 1);
+
+	return module_size;
+}
+
+static int get_ddr2_module_size(int rank_density_byte, int rank_num_byte)
+{
+	int module_size;
+
+	switch (rank_density_byte) {
+	case 1:
+		module_size = 1024;
+		break;
+	case 2:
+		module_size = 2048;
+		break;
+	case 4:
+		module_size = 4096;
+		break;
+	case 8:
+		module_size = 8192;
+		break;
+	case 16:
+		module_size = 16384;
+		break;
+	case 32:
+		module_size = 128;
+		break;
+	case 64:
+		module_size = 256;
+		break;
+	default:
+	case 128:
+		module_size = 512;
+		break;
+	}
+
+	module_size *= (rank_num_byte & 7) + 1;
+
+	return module_size;
+
 }
 
 void get_spd_spec(void)
@@ -527,127 +640,4 @@ void show_spd(void)
 			wait_keyup();
 		}
 	}
-}
-
-static int get_ddr3_module_size(int sdram_capacity, int prim_bus_width,
-				int sdram_width, int ranks)
-{
-	int module_size;
-
-	switch (sdram_capacity) {
-	case 0:
-		module_size = 256;
-		break;
-	case 1:
-		module_size = 512;
-		break;
-	default:
-	case 2:
-		module_size = 1024;
-		break;
-	case 3:
-		module_size = 2048;
-		break;
-	case 4:
-		module_size = 4096;
-		break;
-	case 5:
-		module_size = 8192;
-		break;
-	case 6:
-		module_size = 16384;
-		break;
-	}
-
-	module_size /= 8;
-
-	switch (prim_bus_width) {
-	case 0:
-		module_size *= 8;
-		break;
-	case 1:
-		module_size *= 16;
-		break;
-	case 2:
-		module_size *= 32;
-		break;
-	case 3:
-		module_size *= 64;
-		break;
-	}
-
-	switch (sdram_width) {
-	case 0:
-		module_size /= 4;
-		break;
-	case 1:
-		module_size /= 8;
-		break;
-	case 2:
-		module_size /= 16;
-		break;
-	case 3:
-		module_size /= 32;
-		break;
-	}
-
-	module_size *= (ranks + 1);
-
-	return module_size;
-}
-
-static int get_ddr2_module_size(int rank_density_byte, int rank_num_byte)
-{
-	int module_size;
-
-	switch (rank_density_byte) {
-	case 1:
-		module_size = 1024;
-		break;
-	case 2:
-		module_size = 2048;
-		break;
-	case 4:
-		module_size = 4096;
-		break;
-	case 8:
-		module_size = 8192;
-		break;
-	case 16:
-		module_size = 16384;
-		break;
-	case 32:
-		module_size = 128;
-		break;
-	case 64:
-		module_size = 256;
-		break;
-	default:
-	case 128:
-		module_size = 512;
-		break;
-	}
-
-	module_size *= (rank_num_byte & 7) + 1;
-
-	return module_size;
-
-}
-
-struct ascii_map {
-	unsigned hex_code;
-	char *name;
-};
-
-static char *convert_hex_to_char(unsigned hex_org)
-{
-	static char buf[2] = " ";
-	if (hex_org >= 0x20 && hex_org < 0x80) {
-		buf[0] = hex_org;
-	} else {
-		//buf[0] = '\0';
-		buf[0] = ' ';
-	}
-
-	return buf;
 }
