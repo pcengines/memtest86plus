@@ -16,17 +16,24 @@
 #define NULL 0
 
 #define SMBHSTSTS smbusbase
-#define SMBHSTCNT smbusbase + 2
-#define SMBHSTCMD smbusbase + 3
-#define SMBHSTADD smbusbase + 4
-#define SMBHSTDAT smbusbase + 5
+#define SMBHSTCNT (smbusbase + 2)
+#define SMBHSTCMD (smbusbase + 3)
+#define SMBHSTADD (smbusbase + 4)
+#define SMBHSTDAT (smbusbase + 5)
 
-extern void wait_keyup();
+#define AMD_INDEX_IO_PORT	0xCD6
+#define AMD_DATA_IO_PORT	0xCD7
+#define AMD_SMBUS_BASE_REG	0x2C
+#define AMD_PM_DECODE_EN_REG	0x00
 
-int smbdev, smbfun;
-unsigned short smbusbase;
-unsigned char spd_raw[256];
-char s[] = {'/', 0, '-', 0, '\\', 0, '|', 0};
+static int get_ddr2_module_size(int rank_density_byte, int rank_num_byte);
+static char* convert_hex_to_char(unsigned hex_org);
+static void sb800_get_smb(void);
+static int get_ddr3_module_size(int sdram_capacity, int prim_bus_width, int sdram_width, int ranks);
+
+static int smbdev, smbfun;
+static unsigned short smbusbase;
+static unsigned char spd_raw[256];
 
 static void ich5_get_smb(void)
 {
@@ -53,7 +60,7 @@ static void piix4_get_smb(void)
   	}
 }
 
-void sb800_get_smb(void)
+static void sb800_get_smb(void)
 {
 	int lbyte, hbyte, result;
 	unsigned long x;
@@ -85,7 +92,7 @@ void sb800_get_smb(void)
 	if (smbusbase == 0xFFE0)	{ smbusbase = 0; }
 }
 
-unsigned char ich5_smb_read_byte(unsigned char adr, unsigned char cmd)
+static unsigned char ich5_smb_read_byte(unsigned char adr, unsigned char cmd)
 {
     int l1, h1, l2, h2;
     uint64_t t;
@@ -126,7 +133,7 @@ static void us15w_get_smb(void)
     if (result == 0) smbusbase = (unsigned short) x & 0xFFC0;
 }
 
-unsigned char us15w_smb_read_byte(unsigned char adr, unsigned char cmd)
+static unsigned char us15w_smb_read_byte(unsigned char adr, unsigned char cmd)
 {
     int l1, h1, l2, h2;
     uint64_t t;
@@ -142,6 +149,7 @@ unsigned char us15w_smb_read_byte(unsigned char adr, unsigned char cmd)
     __outb(0x12, smbusbase + 0);    // Start
     //while (((__inb(smbusbase + 1) & 0x08) == 0)) {}	// wait til busy
     rdtsc(l1, h1);
+    static const char s[] = { '/', 0, '-', 0, '\\', 0, '|', 0 };
     cprint(POP2_Y, POP2_X + 16, s + cmd % 8);	// progress bar
     while (((__inb(smbusbase + 1) & 0x01) == 0) ||
 		((__inb(smbusbase + 1) & 0x08) != 0)) {	// wait til command finished
@@ -199,7 +207,7 @@ static struct pci_smbus_controller smbcontrollers[] = {
 };
 
 
-int find_smb_controller(void)
+static int find_smb_controller(void)
 {
     int i = 0;
     unsigned long valuev, valued;
@@ -433,7 +441,7 @@ void show_spd(void)
     }
 }
 
-int get_ddr3_module_size(int sdram_capacity, int prim_bus_width, int sdram_width, int ranks)
+static int get_ddr3_module_size(int sdram_capacity, int prim_bus_width, int sdram_width, int ranks)
 {
 	int module_size;
 
@@ -504,7 +512,7 @@ int get_ddr3_module_size(int sdram_capacity, int prim_bus_width, int sdram_width
 }
 
 
-int get_ddr2_module_size(int rank_density_byte, int rank_num_byte)
+static int get_ddr2_module_size(int rank_density_byte, int rank_num_byte)
 {
 	int module_size;
 
@@ -550,7 +558,7 @@ struct ascii_map {
 };
 
 
-char* convert_hex_to_char(unsigned hex_org) {
+static char* convert_hex_to_char(unsigned hex_org) {
         static char buf[2] = " ";
         if (hex_org >= 0x20 && hex_org < 0x80) {
                 buf[0] = hex_org;
