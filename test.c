@@ -1301,12 +1301,12 @@ void block_move(int iter, int me)
 
 					//
 					// At the end of all this
-					// - the second half equals the inital value of the first half
+					// - the second half equals the initial value of the first half
 					// - the first half is right shifted 32-bytes (with wrapping)
 					//
 
 					// Move first half to second half
-					"movl %1,%%edi\n\t" // Destionation, pp (mid point)
+					"movl %1,%%edi\n\t" // Destination, pp (mid point)
 					"movl %0,%%esi\n\t" // Source, p (start point)
 					"movl %2,%%ecx\n\t" // Length, len (size of a half in DWORDS)
 					"rep\n\t"

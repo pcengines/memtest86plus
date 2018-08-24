@@ -43,7 +43,7 @@ extern struct cpu_ident cpu_id;
 #define __ECC_CHIPKILL  16      /* Can corrected multi-errors */
 
 #define ECC_UNKNOWN      (~0UL)    /* Unknown error correcting ability/status */
-#define ECC_NONE         0       /* Doesnt support ECC (or is BIOS disabled) */
+#define ECC_NONE         0       /* Doesn't support ECC (or is BIOS disabled) */
 #define ECC_RESERVED     __ECC_UNEXPECTED  /* Reserved ECC type */
 #define ECC_DETECT       __ECC_DETECT
 #define ECC_CORRECT      (__ECC_DETECT | __ECC_CORRECT)
@@ -358,7 +358,7 @@ static void setup_amd64(void)
 		/* NEW K8 0Fh Family 90 nm */
 
 		if ((dramcl >> 19)&1) {
-			/* Fill in the correct memory capabilites */
+			/* Fill in the correct memory capabilities */
 			pci_conf_read(0, 24, 3, 0x44, 4, &nbxcfg);
 			ctrl.mode = ddim[(nbxcfg >> 22)&3];
 		} else {
@@ -375,7 +375,7 @@ static void setup_amd64(void)
 		/* OLD K8 130 nm */
 
 		if ((dramcl >> 17)&1) {
-			/* Fill in the correct memory capabilites */
+			/* Fill in the correct memory capabilities */
 			pci_conf_read(0, 24, 3, 0x44, 4, &nbxcfg);
 			ctrl.mode = ddim[(nbxcfg >> 22)&3];
 		} else {
@@ -408,7 +408,7 @@ static void setup_k10(void)
 	pci_conf_read(0, 24, 2, 0x90, 4, &dramcl);
 
 	if ((dramcl >> 19)&1) {
-		// Fill in the correct memory capabilites */
+		// Fill in the correct memory capabilities */
 		pci_conf_read(0, 24, 3, 0x44, 4, &nbxcfg);
 		ctrl.mode = ddim[(nbxcfg >> 22)&3];
 	} else {
@@ -492,7 +492,7 @@ static void setup_amd751(void)
 {
 	unsigned long dram_status;
 
-	/* Fill in the correct memory capabilites */
+	/* Fill in the correct memory capabilities */
 	pci_conf_read(ctrl.bus, ctrl.dev, ctrl.fn, 0x5a, 2, &dram_status);
 	ctrl.cap = ECC_CORRECT;
 	ctrl.mode = (dram_status & (1 << 2)) ? ECC_CORRECT : ECC_NONE;
@@ -515,7 +515,7 @@ static void poll_amd751(void)
 			if (!(ecc_status & (1 << i))) {
 				continue;
 			}
-			// Find the bank the error occured on
+			// Find the bank the error occurred on
 			bank_addr = 0x40 + (i << 1);
 
 			// Now get the information on the erroring bank
@@ -552,7 +552,7 @@ static void setup_amd76x(void)
 	static const int ddim[] = { ECC_NONE, ECC_DETECT, ECC_CORRECT, ECC_CORRECT };
 	unsigned long ecc_mode_status;
 
-	/* Fill in the correct memory capabilites */
+	/* Fill in the correct memory capabilities */
 	pci_conf_read(ctrl.bus, ctrl.dev, ctrl.fn, 0x48, 4, &ecc_mode_status);
 	ctrl.cap = ECC_CORRECT;
 	ctrl.mode = ddim[(ecc_mode_status >> 10)&3];
@@ -570,7 +570,7 @@ static void poll_amd76x(void)
 	pci_conf_read(ctrl.bus, ctrl.dev, ctrl.fn, 0x48, 4, &ecc_mode_status);
 	// Multibit error
 	if (ecc_mode_status & (1 << 9)) {
-		// Find the bank the error occured on
+		// Find the bank the error occurred on
 		bank_addr = 0xC0 + (((ecc_mode_status >> 4) & 0xf) << 2);
 
 		// Now get the information on the erroring bank
@@ -585,7 +585,7 @@ static void poll_amd76x(void)
 	}
 	// Singlebit error
 	if (ecc_mode_status & (1 << 8)) {
-		// Find the bank the error occured on
+		// Find the bank the error occurred on
 		bank_addr = 0xC0 + (((ecc_mode_status >> 0) & 0xf) << 2);
 
 		// Now get the information on the erroring bank
@@ -607,7 +607,7 @@ static void poll_amd76x(void)
 
 static void setup_cnb20(void)
 {
-	/* Fill in the correct memory capabilites */
+	/* Fill in the correct memory capabilities */
 	ctrl.cap = ECC_CORRECT;
 
 	/* FIXME add ECC error polling.  I don't have the documentation
@@ -782,7 +782,7 @@ static void setup_i440gx(void)
 	static const int ddim[] = { ECC_NONE, ECC_DETECT, ECC_CORRECT, ECC_CORRECT };
 	unsigned long nbxcfg;
 
-	/* Fill in the correct memory capabilites */
+	/* Fill in the correct memory capabilities */
 	pci_conf_read(ctrl.bus, ctrl.dev, ctrl.fn, 0x50, 4, &nbxcfg);
 	ctrl.cap = ECC_CORRECT;
 	ctrl.mode = ddim[(nbxcfg >> 7)&3];
@@ -827,7 +827,7 @@ static void setup_i840(void)
 	static const int ddim[] = { ECC_NONE, ECC_RESERVED, ECC_CORRECT, ECC_CORRECT };
 	unsigned long mchcfg;
 
-	/* Fill in the correct memory capabilites */
+	/* Fill in the correct memory capabilities */
 	pci_conf_read(ctrl.bus, ctrl.dev, ctrl.fn, 0x50, 2, &mchcfg);
 	ctrl.cap = ECC_CORRECT;
 	ctrl.mode = ddim[(mchcfg >> 7)&3];
@@ -872,7 +872,7 @@ static void setup_i875(void)
 	long *ptr;
 	ulong dev0, dev6;
 
-	/* Fill in the correct memory capabilites */
+	/* Fill in the correct memory capabilities */
 
 	ctrl.cap = ECC_CORRECT;
 	ctrl.mode = ECC_NONE;
@@ -892,7 +892,7 @@ static void setup_i875(void)
 
 	if (((*ptr >> 18)&1) == 1) { ctrl.mode = ECC_CORRECT; }
 
-	/* Reseting state */
+	/* Resetting state */
 	pci_conf_write(ctrl.bus, ctrl.dev, ctrl.fn, 0xC8, 2,  0x81);
 }
 
@@ -1009,7 +1009,7 @@ static void setup_i845(void)
 	static const int ddim[] = { ECC_NONE, ECC_RESERVED, ECC_CORRECT, ECC_RESERVED };
 	unsigned long drc;
 
-	// Fill in the correct memory capabilites
+	// Fill in the correct memory capabilities
 	pci_conf_read(ctrl.bus, ctrl.dev, ctrl.fn, 0x7C, 4, &drc);
 	ctrl.cap = ECC_CORRECT;
 	ctrl.mode = ddim[(drc >> 20)&3];
@@ -1052,7 +1052,7 @@ static void setup_i820(void)
 	static const int ddim[] = { ECC_NONE, ECC_RESERVED, ECC_CORRECT, ECC_CORRECT };
 	unsigned long mchcfg;
 
-	// Fill in the correct memory capabilites
+	// Fill in the correct memory capabilities
 	pci_conf_read(ctrl.bus, ctrl.dev, ctrl.fn, 0xbe, 2, &mchcfg);
 	ctrl.cap = ECC_CORRECT;
 	ctrl.mode = ddim[(mchcfg >> 7)&3];
@@ -1091,7 +1091,7 @@ static void setup_i850(void)
 	static const int ddim[] = { ECC_NONE, ECC_RESERVED, ECC_CORRECT, ECC_RESERVED };
 	unsigned long mchcfg;
 
-	// Fill in the correct memory capabilites
+	// Fill in the correct memory capabilities
 	pci_conf_read(ctrl.bus, ctrl.dev, ctrl.fn, 0x50, 2, &mchcfg);
 	ctrl.cap = ECC_CORRECT;
 	ctrl.mode = ddim[(mchcfg >> 7)&3];
@@ -1135,7 +1135,7 @@ static void setup_i860(void)
 	unsigned long mchcfg;
 	unsigned long errsts;
 
-	// Fill in the correct memory capabilites
+	// Fill in the correct memory capabilities
 	pci_conf_read(ctrl.bus, ctrl.dev, ctrl.fn, 0x50, 2, &mchcfg);
 	ctrl.cap = ECC_CORRECT;
 	ctrl.mode = ddim[(mchcfg >> 7)&3];

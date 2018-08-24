@@ -1150,7 +1150,7 @@ void serial_console_setup(char *param)
 	serial_cons = 1;
 }
 
-/* Get a comma seperated list of numbers */
+/* Get a comma separated list of numbers */
 void get_list(int x, int y, int len, char *buf)
 {
 	int c, n = 0;

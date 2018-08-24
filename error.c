@@ -51,7 +51,7 @@ void error(ulong *adr, ulong good, ulong bad)
 	/* A sporadic bug exists in test #6, with SMP enabled, that
 	 * reports false positives on < 65K-0.5MB range. I was
 	 * not able to solve this. After investigations, it seems
-	 * related to a BIOS issue similiar to the one solved by
+	 * related to a BIOS issue similar to the one solved by
 	 * USB_WAR, but for MP Table.
 	 */
 	/* Solved
@@ -121,7 +121,7 @@ static void print_err_counts(void)
 */
 
 	/* Paint the error messages on the screen red to provide a vivid */
-	/* indicator that an error has occured */
+	/* indicator that an error has occurred */
 	if ((v->printmode == PRINTMODE_ADDRESSES ||
 	     v->printmode == PRINTMODE_PATTERNS) &&
 	    v->msg_line < 24) {

@@ -278,7 +278,7 @@ void init(void)
 	/* Check fail safe */
 	failsafe(5000, 0x3B);
 
-	/* Initalize SMP */
+	/* Initialize SMP */
 	initialise_cpus();
 
 	for (i = 0; i <num_cpus; i++) {
@@ -625,7 +625,7 @@ void smp_default_mode(void)
 		if (result != -1) { v->fail_safe |= 0b10; }
 	}
 
-	// For 5.01 release, SMP disabled by defualt by config.h toggle
+	// For 5.01 release, SMP disabled by default by config.h toggle
 	if (CONSERVATIVE_SMP) { v->fail_safe |= 0b10; }
 }
 

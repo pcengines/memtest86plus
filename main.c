@@ -462,7 +462,7 @@ void test_start(void)
 			btrace(my_cpu_num, __LINE__, "AP_Start  ", 0, my_cpu_num,
 			       cpu_ord);
 			smp_ap_booted(my_cpu_num);
-			/* Asign a sequential CPU ordinal to each active cpu */
+			/* Assign a sequential CPU ordinal to each active cpu */
 			spin_lock(&barr->mutex);
 			my_cpu_ord = cpu_ord++;
 			smp_set_ordinal(my_cpu_num, my_cpu_ord);

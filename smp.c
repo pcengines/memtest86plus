@@ -33,7 +33,7 @@ void smp_find_cpus(void);
 
 void barrier_init(int max)
 {
-	/* Set the adddress of the barrier structure */
+	/* Set the address of the barrier structure */
 	barr = (struct barrier_s *)0x9ff00;
         barr->lck.slock = 1;
         barr->mutex.slock = 1;

@@ -271,7 +271,7 @@ struct err_info {
 
 #define MAX_MEM_SEGMENTS E820MAX
 
-/* Define common variables accross relocations of memtest86 */
+/* Define common variables across relocations of memtest86 */
 struct vars {
 	int pass;
 	int msg_line;
