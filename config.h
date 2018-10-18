@@ -65,7 +65,7 @@
 #define USB_WAR
 
 /* coreboot version number for memtest86+ - 3 characters. */
-#define COREBOOT_VERSION_NUMBER_STRING "001"
+#define COREBOOT_VERSION_NUMBER_STRING "002"
 
 /* CB_NOSPDD - disable SPD data reading and usage */
 #ifndef CB_NOSPD
