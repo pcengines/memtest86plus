@@ -54,31 +54,17 @@ static void ich5_get_smb(void)
 
 static void sb800_get_smb(void)
 {
-	int lbyte, hbyte, result;
-	unsigned long x;
+	int lbyte, hbyte;
 
-	result = pci_conf_read(0, smbdev, smbfun, 0x08, 1, &x);
+	__outb(AMD_SMBUS_BASE_REG + 1, AMD_INDEX_IO_PORT);
+	hbyte = __inb(AMD_DATA_IO_PORT);
+	__outb(AMD_SMBUS_BASE_REG, AMD_INDEX_IO_PORT);
+	lbyte = __inb(AMD_DATA_IO_PORT);
 
-	/* if processor revision is ML_A0 or ML_A1 use different way for SMBus
-	 * IO base calculation */
-	if (x == 0x42 || x == 0x41) {
-		/* read PMx00+1 to get SmbusAsfIoBase */
-		__outb(AMD_PM_DECODE_EN_REG + 1, AMD_INDEX_IO_PORT);
-		lbyte = __inb(AMD_DATA_IO_PORT);
-
-		/* SMBus IO base is defined as {Smbus0AsfIoBase[7:0], 0x00} */
-		smbusbase = (lbyte & 0xF) << 8;
-	} else {
-		__outb(AMD_SMBUS_BASE_REG + 1, AMD_INDEX_IO_PORT);
-		lbyte = __inb(AMD_DATA_IO_PORT);
-		__outb(AMD_SMBUS_BASE_REG, AMD_INDEX_IO_PORT);
-		hbyte = __inb(AMD_DATA_IO_PORT);
-
-		smbusbase = lbyte;
-		smbusbase <<= 8;
-		smbusbase += hbyte;
-		smbusbase &= 0xFFE0;
-	}
+	smbusbase = hbyte;
+	smbusbase <<= 8;
+	smbusbase += lbyte;
+	smbusbase &= 0xFFE0;
 
 	if (smbusbase == 0xFFE0) {
 		smbusbase = 0;
@@ -99,6 +85,27 @@ static void sb600_get_smb(void)
 			smbusbase = (unsigned short)x & 0xFFFE;
 	} else {
 		// SB800
+		sb800_get_smb();
+	}
+}
+
+static void fch_get_smb(void)
+{
+	int lbyte;
+	unsigned long x;
+
+	pci_conf_read(0, smbdev, smbfun, 0x08, 1, &x);
+
+	/* if processor revision is ML_A0 or ML_A1 use different way for SMBus
+	 * IO base calculation */
+	if (x == 0x42 || x == 0x41) {
+		/* read PMx00+1 to get SmbusAsfIoBase */
+		__outb(AMD_PM_DECODE_EN_REG + 1, AMD_INDEX_IO_PORT);
+		lbyte = __inb(AMD_DATA_IO_PORT);
+
+		/* SMBus IO base is defined as {Smbus0AsfIoBase[7:0], 0x00} */
+		smbusbase = (lbyte & 0xFF) << 8;
+	} else {
 		sb800_get_smb();
 	}
 }
@@ -223,8 +230,8 @@ static struct pci_smbus_controller smbcontrollers[] = {
 	{0x8086, 0x0f12, "Intel E3800", ich5_get_smb, ich5_read_spd},
 
 	// AMD SMBUS
-	{0x1002, 0x4385, "AMD SB600/700", sb600_get_smb, ich5_read_spd},
-	{0x1022, 0x780B, "AMD SB800/900", sb800_get_smb, ich5_read_spd},
+	{0x1002, 0x4385, "AMD SBx00", sb600_get_smb, ich5_read_spd},
+	{0x1022, 0x780B, "AMD FCH", fch_get_smb, ich5_read_spd},
 	{0, 0, "", NULL, NULL}
 };
 
