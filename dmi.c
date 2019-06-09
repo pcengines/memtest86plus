@@ -193,9 +193,8 @@ int open_dmi(void){
 	}
 
 	//we need at least revision 2.1 of SMBIOS
-	if ( eps->majorversion < 2 &&
-	     eps->minorversion < 1){
-	    return -1;
+	if (eps->majorversion < 2 && eps->minorversion < 1) {
+		return -1;
 	}
 
 
@@ -268,23 +267,22 @@ void print_dmi_startup_info(void)
 	slenght = sl1 + sl2;
 	if(sl3 > 2) { slenght += sl3 + 4; } else { slenght++; }
 
-	if(sl1 && sl2)
-		{
-			//dmicol -= slenght; // right align
-			dmicol = 39 - slenght/2; // center align
-			cprint(LINE_DMI, dmicol, string1);
-			dmicol += sl1 + 1;
-			cprint(LINE_DMI, dmicol, string2);
-			dmicol += sl2 + 1;
+	if (sl1 && sl2) {
+		//dmicol -= slenght; // right align
+		dmicol = 39 - slenght / 2; // center align
+		cprint(LINE_DMI, dmicol, string1);
+		dmicol += sl1 + 1;
+		cprint(LINE_DMI, dmicol, string2);
+		dmicol += sl2 + 1;
 
-			if(sl3 > 2){
-				cprint(LINE_DMI, dmicol, "(");
-				dmicol++;
-				cprint(LINE_DMI, dmicol, string3);
-				dmicol += sl3;
-				cprint(LINE_DMI, dmicol, ")");
-			}
+		if (sl3 > 2) {
+			cprint(LINE_DMI, dmicol, "(");
+			dmicol++;
+			cprint(LINE_DMI, dmicol, string3);
+			dmicol += sl3;
+			cprint(LINE_DMI, dmicol, ")");
 		}
+	}
 }
 
 void print_dmi_info(void){
