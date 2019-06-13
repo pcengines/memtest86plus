@@ -3496,7 +3496,7 @@ static void poll_timings_k10(void)
 	pci_conf_read(0, 24, 2, 0x94, 4, &dramchr);
 	pci_conf_read(0, 24, 2, 0x194, 4, &dramchrb);
 
-	if (((dramchr>>14) & 0x1) || ((dramchr>>14) & 0x1)) { chan = 1; } else { chan = 2; }
+	if ((dramchr>>14) & 0x1) { chan = 1; } else { chan = 2; }
 
 	// If Channel A not enabled, switch to channel B
 	if (((dramchr>>14) & 0x1)) {
