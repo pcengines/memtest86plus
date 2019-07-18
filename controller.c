@@ -85,8 +85,6 @@ void coretemp(void)
 	// Only enable coretemp if IMC is known
 	if (imc_type == 0) { return; }
 
-	tnow = 0;
-
 	// Intel  CPU
 	if (cpu_id.vend_id.char_array[0] == 'G' && cpu_id.max_cpuid >= 6) {
 		if (cpu_id.dts_pmp & 1) {
@@ -2477,7 +2475,6 @@ static void poll_fsb_nf2(void)
 	double dramclock, fsb;
 	double mem_m, mem_n;
 	float coef;
-	coef = 10;
 
 	/* First, got the FID */
 	rdmsr(0x0c0010015, mcgsrl, mcgsth);
@@ -2515,7 +2512,6 @@ static void poll_fsb_us15w(void)
 	/* D0 MsgRd, 05 Zunit, 03 MSR */
 	pci_conf_write(0, 0, 0, 0xD0, 4, 0xD0050300 );
 	pci_conf_read(0, 0, 0, 0xD4, 4, &msr );
-	fsb = ( msr >> 3 ) & 1;
 
 	dramratio = 0.5;
 
@@ -2566,9 +2562,6 @@ static void poll_fsb_nhm(void)
 	//unsigned long qpi_pll_status;
 	//float qpi_speed;
 
-
-	fsb = ((extclock /1000) / coef);
-
 	/* Print QPI Speed (if ECC not supported) */
 	/*
 	if(ctrl.mode == ECC_NONE && cpu_id.vers.bits.model == 10) {
@@ -2608,8 +2601,6 @@ static void poll_fsb_nhm32(void)
 	float coef = getNHMmultiplier();
 	//unsigned long qpi_pll_status;
 	//float qpi_speed;
-
-	fsb = ((extclock /1000) / coef);
 
 	/* Print QPI Speed (if ECC not supported) */
 	/*
@@ -2680,7 +2671,6 @@ static void poll_fsb_snb(void)
 	pci_conf_read( 0, 0, 0, 0x48, 4, &dev0);
 	dev0 &= 0xFFFFC000;
 	ptr=(long*)(dev0+0x5E04);
-	dramratio = 1;
 
 	/* Get the clock ratio */
 	dramratio = (float)(*ptr & 0x1F) * (133.34f / 100.0f);
