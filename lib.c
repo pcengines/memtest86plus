@@ -27,15 +27,19 @@ static const uint16_t serial_base_ports[] = { 0x3f8, 0x2f8, 0x3e8, 0x2e8 };
 
 static struct serial_port {
 	bool enable;
+	bool use_mmio;
 	unsigned int parity;
 	unsigned int bits;
 	unsigned int baudrate;
+	unsigned int reg_width;
 	uintptr_t base_addr;
 } console_serial = {
 	.enable 	= SERIAL_CONSOLE_DEFAULT,
 	.baudrate 	= SERIAL_BAUD_RATE,
 	.parity 	= 0,
 	.bits 		= 8,
+	.reg_width	= 1,
+	.use_mmio	= 0,
 	.base_addr	= serial_base_ports[SERIAL_TTY],
 };
 
@@ -606,12 +610,32 @@ void set_cache(int val)
 
 static void serial_write_reg(struct serial_port *port, uint16_t reg, uint8_t val)
 {
-	outb(val, port->base_addr + reg);
+	union {
+		uintptr_t addr;
+		uint8_t *ptr;
+	} reg_walker;
+
+	reg_walker.addr = port->base_addr + reg * port->reg_width;
+
+	if (port->use_mmio)
+		*reg_walker.ptr = val;
+	else
+		outb(val, reg_walker.addr);
 }
 
 static uint8_t serial_read_reg(struct serial_port *port, uint16_t reg)
 {
-	return inb(port->base_addr + reg);
+	union {
+		uintptr_t addr;
+		uint8_t *ptr;
+	} reg_walker;
+
+	reg_walker.addr = port->base_addr + reg * port->reg_width;
+
+	if (port->use_mmio)
+		return *reg_walker.ptr;
+	else
+		return inb(reg_walker.addr);
 }
 
 /* Wait for transmitter & holding register to empty */
@@ -1099,14 +1123,10 @@ void wait_keyup( void ) {
 
 void serial_console_setup_from_lb_serial(const struct lb_serial *serial)
 {
-	if (serial->type != LB_SERIAL_TYPE_IO_MAPPED)
-		return;
-
-	if (serial->regwidth != 1)
-		return;
-
 	console_serial.base_addr = serial->baseaddr;
 	console_serial.baudrate = serial->baud;
+	console_serial.use_mmio = (serial->type == LB_SERIAL_TYPE_MEMORY_MAPPED);
+	console_serial.reg_width = serial->regwidth;
 	console_serial.bits = 8;
 	console_serial.parity = 0;
 	console_serial.enable = 1;
