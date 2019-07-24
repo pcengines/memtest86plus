@@ -15,19 +15,29 @@
 
 
 int slock = 0;
-short serial_cons = SERIAL_CONSOLE_DEFAULT;
 #if SERIAL_TTY > 3
 #error Bad SERIAL_TTY. Only ttyS0 thru ttyS3 are supported.
 #endif
-short serial_tty = SERIAL_TTY;
-const short serial_base_ports[] = {0x3f8, 0x2f8, 0x3e8, 0x2e8};
 
 #if ((115200%SERIAL_BAUD_RATE) != 0)
 #error Bad default baud rate
 #endif
-int serial_baud_rate = SERIAL_BAUD_RATE;
-unsigned char serial_parity = 0;
-unsigned char serial_bits = 8;
+static const uint16_t serial_base_ports[] = { 0x3f8, 0x2f8, 0x3e8, 0x2e8 };
+
+
+static struct serial_port {
+	bool enable;
+	unsigned int parity;
+	unsigned int bits;
+	unsigned int baudrate;
+	uintptr_t base_addr;
+} console_serial = {
+	.enable 	= SERIAL_CONSOLE_DEFAULT,
+	.baudrate 	= SERIAL_BAUD_RATE,
+	.parity 	= 0,
+	.bits 		= 8,
+	.base_addr	= serial_base_ports[SERIAL_TTY],
+};
 
 struct ascii_map_str {
         int ascii;
@@ -594,37 +604,38 @@ void set_cache(int val)
 	}
 }
 
-static void serial_echo_outb(uint8_t val, uint16_t reg)
+static void serial_write_reg(struct serial_port *port, uint16_t reg, uint8_t val)
 {
-	outb(val, serial_base_ports[serial_tty] + reg);
+	outb(val, port->base_addr + reg);
 }
 
-static uint8_t serial_echo_inb(uint16_t reg)
+static uint8_t serial_read_reg(struct serial_port *port, uint16_t reg)
 {
-	return inb(serial_base_ports[serial_tty] + reg);
+	return inb(port->base_addr + reg);
 }
 
 /* Wait for transmitter & holding register to empty */
-static void serial_wait_for_xmit(void)
+static void serial_wait_for_xmit(struct serial_port *port)
 {
 	uint8_t lsr;
 
 	do {
-		lsr = serial_echo_inb(UART_LSR);
+		lsr = serial_read_reg(port, UART_LSR);
 	} while ((lsr & BOTH_EMPTY) != BOTH_EMPTY);
 }
 
 int get_key(void) {
+	struct serial_port *port = &console_serial;
 	int c;
 
 	c = inb(0x64);
 	if ((c & 1) && (c != 0xff)) {
 		return inb(0x60);
-	} else if (serial_cons) {
+	} else if (console_serial.enable) {
 		int comstat;
-		comstat = serial_echo_inb(UART_LSR);
+		comstat = serial_read_reg(port, UART_LSR);
 		if (comstat & UART_LSR_DR) {
-			c = serial_echo_inb(UART_RX);
+			c = serial_read_reg(port, UART_RX);
 			/* Pressing '.' has same effect as 'c'
 			   on a keyboard.
 			   Oct 056   Dec 46   Hex 2E   Ascii .
@@ -662,7 +673,7 @@ void check_input(void)
 			break;
 		case 0x26:
 			/* ^L/L - redraw the display */
-			if (serial_cons) {
+			if (console_serial.enable) {
 				tty_print_screen();
 			} else {
 		        	clear_screen_buf();
@@ -821,30 +832,31 @@ void ttyprint(int y, int x, const char *p)
 
 void serial_echo_init(void)
 {
+	struct serial_port *port = &console_serial;
 	int comstat, serial_div;
 	unsigned char lcr;
 
 	/* read the Divisor Latch */
-	comstat = serial_echo_inb(UART_LCR);
-	serial_echo_outb(comstat | UART_LCR_DLAB, UART_LCR);
-	serial_echo_inb(UART_DLM);
-	serial_echo_inb(UART_DLL);
-	serial_echo_outb(comstat, UART_LCR);
+	comstat = serial_read_reg(port, UART_LCR);
+	serial_write_reg(port, UART_LCR, comstat | UART_LCR_DLAB);
+	serial_read_reg(port, UART_DLM);
+	serial_read_reg(port, UART_DLL);
+	serial_write_reg(port, UART_LCR, comstat);
 
 	/* now do hardwired init */
-	lcr = serial_parity | (serial_bits - 5);
-	serial_echo_outb(lcr, UART_LCR); /* No parity, 8 data bits, 1 stop */
-	serial_div = 115200 / serial_baud_rate;
-	serial_echo_outb(0x80|lcr, UART_LCR); /* Access divisor latch */
-	serial_echo_outb(serial_div & 0xff, UART_DLL);  /* baud rate divisor */
-	serial_echo_outb((serial_div >> 8) & 0xff, UART_DLM);
-	serial_echo_outb(lcr, UART_LCR); /* Done with divisor */
+	lcr = port->parity | (port->bits - 5);
+	serial_write_reg(port, UART_LCR, lcr); /* No parity, 8 data bits, 1 stop */
+	serial_div = 115200 / port->baudrate;
+	serial_write_reg(port, UART_LCR, 0x80|lcr); /* Access divisor latch */
+	serial_write_reg(port, UART_DLL, serial_div & 0xff);  /* baud rate divisor */
+	serial_write_reg(port, UART_DLM, (serial_div >> 8) & 0xff);
+	serial_write_reg(port, UART_LCR, lcr); /* Done with divisor */
 
 	/* Prior to disabling interrupts, read the LSR and RBR
 	 * registers */
-	comstat = serial_echo_inb(UART_LSR); /* COM? LSR */
-	comstat = serial_echo_inb(UART_RX);	/* COM? RBR */
-	serial_echo_outb(0x00, UART_IER); /* Disable all interrupts */
+	comstat = serial_read_reg(port, UART_LSR); /* COM? LSR */
+	comstat = serial_read_reg(port, UART_RX);	/* COM? RBR */
+	serial_write_reg(port, UART_IER, 0x00); /* Disable all interrupts */
 
         clear_screen_buf();
 
@@ -872,18 +884,20 @@ int getnum(ulong val)
 
 void serial_echo_print(const char *p)
 {
-	if (!serial_cons) {
+	struct serial_port *port = &console_serial;
+
+	if (!port->enable) {
 		return;
 	}
 	/* Now, do each character */
 	while (*p) {
-		serial_wait_for_xmit();
+		serial_wait_for_xmit(port);
 
 		/* Send the character out. */
-		serial_echo_outb(*p, UART_TX);
+		serial_write_reg(port, UART_TX, *p);
 		if(*p==10) {
-			serial_wait_for_xmit();
-			serial_echo_outb(13, UART_TX);
+			serial_wait_for_xmit(port);
+			serial_write_reg(port, UART_TX, 13);
 		}
 		p++;
 	}
@@ -1077,7 +1091,7 @@ void wait_keyup( void ) {
 		 * With the serial port this results in double pressing
 		 * or something worse for just about every key.
 		 */
-		if (serial_cons) {
+		if (console_serial.enable) {
 			return;
 		}
 	}
@@ -1091,21 +1105,11 @@ void serial_console_setup_from_lb_serial(const struct lb_serial *serial)
 	if (serial->regwidth != 1)
 		return;
 
-	switch (serial->baseaddr) {
-		case 0x3f8:
-			serial_tty = 0;
-			break;
-		case 0x2f8:
-			serial_tty = 1;
-			break;
-		default:
-			return;
-	}
-
-	serial_baud_rate = serial->baud;
-	serial_bits = 8;
-	serial_parity = 0;
-	serial_cons = 1;
+	console_serial.base_addr = serial->baseaddr;
+	console_serial.baudrate = serial->baud;
+	console_serial.bits = 8;
+	console_serial.parity = 0;
+	console_serial.enable = 1;
 }
 
 /*
@@ -1186,14 +1190,14 @@ void serial_console_setup(char *param)
 	if (*end != '\0' && *end != ' ')
 		return;  /* garbage at the end */
 
-	serial_bits = bits;
+	console_serial.bits = bits;
 	save_parity:
-	serial_parity = parity;
+	console_serial.parity = parity;
 	save_baud_rate:
-	serial_baud_rate = (int) baud_rate;
+	console_serial.baudrate = baud_rate;
   save_tty:
-	serial_tty = (short) tty;
-	serial_cons = 1;
+	console_serial.base_addr = serial_base_ports[tty];
+	console_serial.enable = 1;
 }
 
 /* Get a comma separated list of numbers */
