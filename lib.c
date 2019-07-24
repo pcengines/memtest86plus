@@ -14,7 +14,7 @@
 #include "coreboot_tables.h"
 
 
-int slock = 0, lsr = 0;
+int slock = 0;
 short serial_cons = SERIAL_CONSOLE_DEFAULT;
 #if SERIAL_TTY > 3
 #error Bad SERIAL_TTY. Only ttyS0 thru ttyS3 are supported.
@@ -594,6 +594,26 @@ void set_cache(int val)
 	}
 }
 
+static void serial_echo_outb(uint8_t val, uint16_t reg)
+{
+	outb(val, serial_base_ports[serial_tty] + reg);
+}
+
+static uint8_t serial_echo_inb(uint16_t reg)
+{
+	return inb(serial_base_ports[serial_tty] + reg);
+}
+
+/* Wait for transmitter & holding register to empty */
+static void serial_wait_for_xmit(void)
+{
+	uint8_t lsr;
+
+	do {
+		lsr = serial_echo_inb(UART_LSR);
+	} while ((lsr & BOTH_EMPTY) != BOTH_EMPTY);
+}
+
 int get_key(void) {
 	int c;
 
@@ -857,12 +877,12 @@ void serial_echo_print(const char *p)
 	}
 	/* Now, do each character */
 	while (*p) {
-		WAIT_FOR_XMITR;
+		serial_wait_for_xmit();
 
 		/* Send the character out. */
 		serial_echo_outb(*p, UART_TX);
 		if(*p==10) {
-			WAIT_FOR_XMITR;
+			serial_wait_for_xmit();
 			serial_echo_outb(13, UART_TX);
 		}
 		p++;
