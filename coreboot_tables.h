@@ -56,6 +56,7 @@ struct lb_record {
 #define LB_TAG_UNUSED	0x0000
 
 #define LB_TAG_MEMORY	0x0001
+#define LB_TAG_SERIAL	0x000f
 #define LB_TAG_FORWARD	0x0011
 
 struct lb_memory_range {
@@ -75,6 +76,20 @@ struct lb_memory {
 	uint32_t tag;
 	uint32_t size;
 	struct lb_memory_range map[0];
+};
+
+#define LB_SERIAL_TYPE_IO_MAPPED     1
+#define LB_SERIAL_TYPE_MEMORY_MAPPED 2
+
+struct lb_serial {
+	uint32_t tag;
+	uint32_t size;
+	uint32_t type;
+	uint32_t baseaddr;
+	uint32_t baud;
+	uint32_t regwidth;
+	uint32_t input_hertz;
+	uint32_t uart_pci_addr;
 };
 
 struct lb_forward {

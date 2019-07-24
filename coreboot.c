@@ -132,6 +132,7 @@ static struct lb_header * find_lb_table(void)
 
 int query_coreboot(void)
 {
+	const struct lb_serial *serial = 0;
 	struct lb_header *head;
 	struct lb_record *rec;
 	struct lb_memory *mem;
@@ -153,11 +154,21 @@ int query_coreboot(void)
 
 	mem = 0;
 	for_each_lbrec(head, rec) {
-		if (rec->tag == LB_TAG_MEMORY) {
+		switch (rec->tag) {
+		case LB_TAG_MEMORY:
 			mem = (struct lb_memory *)rec;
+			break;
+		case LB_TAG_SERIAL:
+			serial = (const void *)rec;
+			break;
+		default:
 			break;
 		}
 	}
+
+	if (serial)
+		serial_console_setup_from_lb_serial(serial);
+
 	if (!mem) {
 		return 1;
 	}

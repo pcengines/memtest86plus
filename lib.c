@@ -11,6 +11,7 @@
 #include "stdint.h"
 #include "cpuid.h"
 #include "smp.h"
+#include "coreboot_tables.h"
 
 
 int slock = 0, lsr = 0;
@@ -1060,6 +1061,31 @@ void wait_keyup( void ) {
 			return;
 		}
 	}
+}
+
+void serial_console_setup_from_lb_serial(const struct lb_serial *serial)
+{
+	if (serial->type != LB_SERIAL_TYPE_IO_MAPPED)
+		return;
+
+	if (serial->regwidth != 1)
+		return;
+
+	switch (serial->baseaddr) {
+		case 0x3f8:
+			serial_tty = 0;
+			break;
+		case 0x2f8:
+			serial_tty = 1;
+			break;
+		default:
+			return;
+	}
+
+	serial_baud_rate = serial->baud;
+	serial_bits = 8;
+	serial_parity = 0;
+	serial_cons = 1;
 }
 
 /*

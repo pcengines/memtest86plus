@@ -104,6 +104,8 @@ typedef unsigned long ulong;
 #define SZ_MODE_BIOS		1
 #define SZ_MODE_PROBE		2
 
+struct lb_serial;
+
 #define getCx86(reg) ({ outb((reg), 0x22); inb(0x23); })
 
 int memcmp(const void *s1, const void *s2, ulong count);
@@ -120,6 +122,7 @@ void printpatn(void);
 void itoa(char s[], int n);
 void reverse(char *p);
 void serial_console_setup(char *param);
+void serial_console_setup_from_lb_serial(const struct lb_serial *serial);
 void serial_echo_init(void);
 void serial_echo_print(const char *s);
 void ttyprint(int y, int x, const char *s);
