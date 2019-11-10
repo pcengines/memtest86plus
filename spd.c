@@ -76,7 +76,7 @@ static void sb600_get_smb(void)
 	unsigned long x;
 	int result;
 
-	result = pci_conf_read(0, smbdev, smbfun, 0x08, 1, &x);
+	(void)pci_conf_read(0, smbdev, smbfun, 0x08, 1, &x);
 
 	if (x < 0x40) {
 		// SB600/700
