@@ -13,7 +13,7 @@
 
 /* CONSERVATIVE_SMP - If set to 0, SMP will be enabled by default */
 /* Might be enabled in future revision after extensive testing */
-/* In all cases, SMP is disabled by defaut on server platform */
+/* In all cases, SMP is disabled by default on server platforms */
 #ifndef CONSERVATIVE_SMP
 #define CONSERVATIVE_SMP 1
 #endif

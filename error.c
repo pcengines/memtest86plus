@@ -38,7 +38,7 @@ void error(ulong *adr, ulong good, ulong bad)
 	xor = good ^ bad;
 
 #ifdef USB_WAR
-	/* Skip any errrors that appear to be due to the BIOS using location
+	/* Skip any errors that appear to be due to the BIOS using location
 	 * 0x4e0 for USB keyboard support.  This often happens with Intel
 	 * 810, 815 and 820 chipsets.  It is possible that we will skip
 	 * a real error but the odds are very low.

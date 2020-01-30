@@ -92,7 +92,7 @@ void coretemp(void)
 			tabs = ((msrl >> 16) & 0x7F);
 			rdmsr(MSR_IA32_TEMPERATURE_TARGET, msrl, msrh);
 			tjunc = ((msrl >> 16) & 0x7F);
-			if (tjunc < 50 || tjunc > 125) { tjunc = 90; } // assume Tjunc = 90°C if boggus value received.
+			if (tjunc < 50 || tjunc > 125) { tjunc = 90; } // assume Tjunc = 90°C if bogus value received.
 			tnow = tjunc - tabs;
 			dprint(LINE_CPU+1, 30, v->check_temp, 3, 0);
 			v->check_temp = tnow;
@@ -1593,7 +1593,7 @@ static void poll_fsb_k12(void)
 
 	fsb = ((extclock / 1000.0f) / ((fid + 16.0f) / did));
 
-	/* Finaly, we need the clock ratio */
+	/* Finally, we need the clock ratio */
 	pci_conf_read(0, 24, 2, 0x94, 4, &dramchr);
 
 	if (((dramchr >> 14) & 0x1) == 1) {
@@ -1686,7 +1686,7 @@ static void poll_fsb_k15(void)
 
 	fsb = ((extclock / 1000.0f) / ((fid + 16.0f) / (2^did)) / 2);
 
-	/* Finaly, we need the clock ratio */
+	/* Finally, we need the clock ratio */
 	pci_conf_read(0, 24, 2, 0x94, 4, &dramchr);
 
 	if (((dramchr >> 14) & 0x1) == 1) {

@@ -382,8 +382,8 @@ void get_spd_spec(void)
 	}
 
 	smbcontrollers[index].get_adr();
-	cprint(LINE_SPD - 2, 0, "Memory SPD Informations");
-	cprint(LINE_SPD - 1, 0, "--------------------------");
+	cprint(LINE_SPD - 2, 0, "Memory SPD Information");
+	cprint(LINE_SPD - 1, 0, "-------------------------");
 
 	for (j = 0; j < 8; j++) {
 		if (smbcontrollers[index].read_spd(j) == 0) {
