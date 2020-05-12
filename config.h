@@ -46,6 +46,10 @@
 #define SERIAL_TTY 0
 #endif
 
+#ifndef DEBUG_SERIAL_TTY
+#define DEBUG_SERIAL_TTY 1
+#endif
+
 /* SERIAL_BAUD_RATE - Baud rate for the serial console */
 #ifndef SERIAL_BAUD_RATE
 #define SERIAL_BAUD_RATE 115200

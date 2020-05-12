@@ -12,9 +12,9 @@
 
 char get_scrn_buf(const int y, const int x);
 void set_scrn_buf(const int y, const int x, const char val);
-void clear_screen_buf(void);
+void clear_screen_buf(short tty);
 void tty_print_region(const int pi_top,const int pi_left, const int pi_bottom,const int pi_right);
-void tty_print_line(int y, int x, const char *text);
+void tty_print_line(int y, int x, short tty, const char *text);
 void tty_print_screen(void);
 void print_error(char *pstr);
 #endif /* SCREEN_BUFFER_H_1D10F83B_INCLUDED */

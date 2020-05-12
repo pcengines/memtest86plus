@@ -412,7 +412,6 @@ void test_start(void)
 	}
 	/* First thing, switch to main stack */
 	switch_to_main_stack(my_cpu_num);
-
 	/* First time (for this CPU) initialization */
 	if (start_seq < 2) {
 		/* These steps are only done by the boot cpu */
@@ -541,6 +540,7 @@ void test_start(void)
 
 	/* Loop through all tests */
 	while (1) {
+		cprint_tty(15,5, DEBUG_SERIAL_TTY, "@#@#@#@ DEBUG PRINT in loop 1@#@#@#@");
 		/* If the restart flag is set all initial params */
 		if (restart_flag) {
 			set_defaults();

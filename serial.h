@@ -136,13 +136,13 @@
  */
 
 #include "io.h"
-#define serial_echo_outb(v,a) outb((v),(a)+serial_base_ports[serial_tty])
-#define serial_echo_inb(a)    inb((a)+serial_base_ports[serial_tty])
+#define serial_echo_outb(v,a,tty) outb((v),(a)+serial_base_ports[(tty)])
+#define serial_echo_inb(a,tty)    inb((a)+serial_base_ports[(tty)])
 #define BOTH_EMPTY (UART_LSR_TEMT | UART_LSR_THRE)
 /* Wait for transmitter & holding register to empty */
-#define WAIT_FOR_XMITR \
+#define WAIT_FOR_XMITR(tty) \
  do { \
-       lsr = serial_echo_inb(UART_LSR); \
+       lsr = serial_echo_inb(UART_LSR, (tty)); \
  } while ((lsr & BOTH_EMPTY) != BOTH_EMPTY)
 
 #if 0

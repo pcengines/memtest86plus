@@ -17,6 +17,8 @@
 #define X_SIZE SCREEN_X+1
 
 static char screen_buf[Y_SIZE][X_SIZE];
+static char debug_screen_buf[Y_SIZE][X_SIZE];
+
 
 #ifdef SCRN_DEBUG
 
@@ -48,17 +50,20 @@ set_scrn_buf(const int y,
     screen_buf[y][x] = val;
 }
 
-void clear_screen_buf(void)
+void clear_screen_buf(short tty)
 {
     int y, x;
+
+    char (*buf)[X_SIZE] = 
+        (tty == DEBUG_SERIAL_TTY) ? debug_screen_buf : screen_buf;
 
     for (y=0; y < SCREEN_Y; ++y){
         for (x=0; x < SCREEN_X; ++x){
             CHECK_BOUNDS(y,x);
-            screen_buf[y][x] = ' ';
+            buf[y][x] = ' ';
         }
         CHECK_BOUNDS(y,SCREEN_X);
-        screen_buf[y][SCREEN_X] = '\0';
+        buf[y][SCREEN_X] = '\0';
     }
 }
 
@@ -84,10 +89,13 @@ void tty_print_region(const int pi_top,
 }
 
 void tty_print_line(
-	int y, int x, const char *text)
+	int y, int x, short tty, const char *text)
 {
+	char (*buf)[X_SIZE] = 
+        (tty == DEBUG_SERIAL_TTY) ? debug_screen_buf : screen_buf;
+
 	for(; *text && (x < SCREEN_X); x++, text++) {
-		if (*text != screen_buf[y][x]) {
+		if (*text != buf[y][x]) {
 			break;
 		}
 	}
@@ -95,9 +103,9 @@ void tty_print_line(
 	if (*text == '\0') {
 		return;
 	}
-	ttyprint(y, x, text);
+	ttyprint_tty(y, x, tty, text);
 	for(; *text && (x < SCREEN_X); x++, text++) {
-		screen_buf[y][x] = *text;
+		buf[y][x] = *text;
 	}
 }
 

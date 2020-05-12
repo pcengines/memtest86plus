@@ -34,6 +34,7 @@ unsigned long imc_type = 0;
 extern int maxcpus;
 extern char cpu_mask[];
 extern void initialise_cpus();
+extern short serial_tty;
 
 /* Here we store all of the cpuid data */
 extern struct cpu_ident cpu_id;
@@ -131,7 +132,7 @@ void failsafe(int msec, int scs)
 
 
 
-static void display_init(void)
+static void display_init(short tty)
 {
 	int i;
 	volatile char *pp;
@@ -144,12 +145,12 @@ static void display_init(void)
 	__outb(0xFF, 0x03D5);
 
 
-	serial_echo_init();
-	serial_echo_print("\x1b[LINE_SCROLL;24r"); /* Set scroll area row 7-23 */
-	serial_echo_print("\x1b[H\x1b[2J");   /* Clear Screen */
-	serial_echo_print("\x1b[37m\x1b[44m");
-	serial_echo_print("\x1b[0m");
-	serial_echo_print("\x1b[37m\x1b[44m");
+	serial_echo_init(tty);
+	serial_echo_print(tty, "\x1b[LINE_SCROLL;24r"); /* Set scroll area row 7-23 */
+	serial_echo_print(tty, "\x1b[H\x1b[2J");   /* Clear Screen */
+	serial_echo_print(tty, "\x1b[37m\x1b[44m");
+	serial_echo_print(tty, "\x1b[0m");
+	serial_echo_print(tty, "\x1b[37m\x1b[44m");
 
 	/* Clear screen & set background to blue */
 	for (i=0, pp=(char *)(SCREEN_ADR); i<80*24; i++) {
@@ -172,7 +173,7 @@ static void display_init(void)
 		*pp = 0x71;
 	}
 
-	serial_echo_print("\x1b[0m");
+	serial_echo_print(tty, "\x1b[0m");
 }
 
 /*
@@ -187,8 +188,12 @@ void init(void)
 	/* Turn on cache */
 	set_cache(1);
 
+	/* Initialize debug serial port*/
+	serial_echo_init(DEBUG_SERIAL_TTY);
+
 	/* Setup the display */
-	display_init();
+	display_init(serial_tty);
+	
 
 	cprint(5, 60, "| Time:   0:00:00");
 	cprint(1, COL_MID, "Pass   %");

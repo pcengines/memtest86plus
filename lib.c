@@ -227,6 +227,14 @@ void cplace(int y, int x, const char c)
  */
 void cprint(int y, int x, const char *text)
 {
+	cprint_tty(y, x, serial_tty, text);
+}
+
+/*
+ * Print characters on screen using ttyS?
+ */
+void cprint_tty(int y, int x, short tty, const char *text)
+{
 	register int i;
 	char *dptr;
 
@@ -235,7 +243,7 @@ void cprint(int y, int x, const char *text)
 		*dptr = text[i];
 		dptr += 2;
         }
-        tty_print_line(y, x, text);
+        tty_print_line(y, x, tty, text);
 }
 
 void itoa(char s[], int n)
@@ -601,9 +609,9 @@ int get_key(void) {
 		return inb(0x60);
 	} else if (serial_cons) {
 		int comstat;
-		comstat = serial_echo_inb(UART_LSR);
+		comstat = serial_echo_inb(UART_LSR, serial_tty);
 		if (comstat & UART_LSR_DR) {
-			c = serial_echo_inb(UART_RX);
+			c = serial_echo_inb(UART_RX, serial_tty);
 			/* Pressing '.' has same effect as 'c'
 			   on a keyboard.
 			   Oct 056   Dec 46   Hex 2E   Ascii .
@@ -641,7 +649,7 @@ void check_input(void)
 			break;
 		case 0x26:
 			/* ^L/L - redraw the display */
-		        clear_screen_buf();
+		        clear_screen_buf(serial_tty);
 			tty_print_region(0, 0, 80, 100);
 			break;
 		}
@@ -776,7 +784,7 @@ ulong getval(int x, int y, int result_shift)
 	return val;
 }
 
-void ttyprint(int y, int x, const char *p)
+void ttyprint_tty(int y, int x, short tty, const char *p)
 {
 	static char sx[3];
 	static char sy[3];
@@ -786,42 +794,46 @@ void ttyprint(int y, int x, const char *p)
 	x++; y++;
 	itoa(sx, x);
 	itoa(sy, y);
-	serial_echo_print("\x1b[");
-	serial_echo_print(sy);
-	serial_echo_print(";");
-	serial_echo_print(sx);
-	serial_echo_print("H");
-	serial_echo_print(p);
+	serial_echo_print(tty, "\x1b[");
+	serial_echo_print(tty, sy);
+	serial_echo_print(tty, ";");
+	serial_echo_print(tty, sx);
+	serial_echo_print(tty, "H");
+	serial_echo_print(tty, p);
+}
+void ttyprint(int y, int x, const char *p)
+{
+	ttyprint_tty(y, x, serial_tty, p);
 }
 
-void serial_echo_init(void)
+void serial_echo_init(short tty)
 {
 	int comstat, serial_div;
 	unsigned char lcr;
 
 	/* read the Divisor Latch */
-	comstat = serial_echo_inb(UART_LCR);
-	serial_echo_outb(comstat | UART_LCR_DLAB, UART_LCR);
-	serial_echo_inb(UART_DLM);
-	serial_echo_inb(UART_DLL);
-	serial_echo_outb(comstat, UART_LCR);
+	comstat = serial_echo_inb(UART_LCR, tty);
+	serial_echo_outb(comstat | UART_LCR_DLAB, UART_LCR, tty);
+	serial_echo_inb(UART_DLM, tty);
+	serial_echo_inb(UART_DLL, tty);
+	serial_echo_outb(comstat, UART_LCR, tty);
 
 	/* now do hardwired init */
 	lcr = serial_parity | (serial_bits - 5);
-	serial_echo_outb(lcr, UART_LCR); /* No parity, 8 data bits, 1 stop */
+	serial_echo_outb(lcr, UART_LCR, tty); /* No parity, 8 data bits, 1 stop */
 	serial_div = 115200 / serial_baud_rate;
-	serial_echo_outb(0x80|lcr, UART_LCR); /* Access divisor latch */
-	serial_echo_outb(serial_div & 0xff, UART_DLL);  /* baud rate divisor */
-	serial_echo_outb((serial_div >> 8) & 0xff, UART_DLM);
-	serial_echo_outb(lcr, UART_LCR); /* Done with divisor */
+	serial_echo_outb(0x80|lcr, UART_LCR, tty); /* Access divisor latch */
+	serial_echo_outb(serial_div & 0xff, UART_DLL, tty);  /* baud rate divisor */
+	serial_echo_outb((serial_div >> 8) & 0xff, UART_DLM, tty);
+	serial_echo_outb(lcr, UART_LCR, tty); /* Done with divisor */
 
 	/* Prior to disabling interrupts, read the LSR and RBR
 	 * registers */
-	comstat = serial_echo_inb(UART_LSR); /* COM? LSR */
-	comstat = serial_echo_inb(UART_RX);	/* COM? RBR */
-	serial_echo_outb(0x00, UART_IER); /* Disable all interrupts */
+	comstat = serial_echo_inb(UART_LSR, tty); /* COM? LSR */
+	comstat = serial_echo_inb(UART_RX, tty);	/* COM? RBR */
+	serial_echo_outb(0x00, UART_IER, tty); /* Disable all interrupts */
 
-        clear_screen_buf();
+        clear_screen_buf(tty);
 
 	return;
 }
@@ -845,24 +857,26 @@ int getnum(ulong val)
 }
 
 
-void serial_echo_print(const char *p)
+void serial_echo_print(short tty, const char *p)
 {
 	if (!serial_cons) {
 		return;
 	}
 	/* Now, do each character */
 	while (*p) {
-		WAIT_FOR_XMITR;
+		WAIT_FOR_XMITR(tty);
 
 		/* Send the character out. */
-		serial_echo_outb(*p, UART_TX);
+		serial_echo_outb(*p, UART_TX, tty);
 		if(*p==10) {
-			WAIT_FOR_XMITR;
-			serial_echo_outb(13, UART_TX);
+			WAIT_FOR_XMITR(tty);
+			serial_echo_outb(13, UART_TX, tty);
 		}
 		p++;
 	}
 }
+
+
 
 /* Except for multi-character key sequences this mapping
  * table is complete.  So it should not need to be updated
