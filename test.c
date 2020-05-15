@@ -31,6 +31,8 @@ void poll_errors();
 
 static inline ulong roundup(ulong value, ulong mask)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "test.c 34: "
+	"ulong roundup(ulong value, ulong mask)\n");
 	return (value + mask) & ~mask;
 }
 
@@ -40,6 +42,8 @@ static inline ulong roundup(ulong value, ulong mask)
 // align - number of bytes to align each block to
 void calculate_chunk(ulong** start, ulong** end, int me, int j, int makeMultipleOf)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "test.c 45: "
+	"void calculate_chunk(ulong** start, ulong** end, int me, int j, int makeMultipleOf)\n");
 	ulong chunk;
 
 
@@ -77,6 +81,8 @@ void calculate_chunk(ulong** start, ulong** end, int me, int j, int makeMultiple
  */
 void addr_tst1(int me)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "test.c 84: "
+	"void addr_tst1(int me)\n");
 	int i, j, k;
 	volatile ulong *p, *pt, *end;
 	ulong bad, mask, bank, p1;
@@ -178,6 +184,8 @@ void addr_tst1(int me)
  */
 void addr_tst2(int me)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "test.c 187: "
+	"void addr_tst2(int me)\n");
 	int j, done;
 	ulong *p, *pe, *end, *start;
 
@@ -300,6 +308,8 @@ void addr_tst2(int me)
  */
 void movinvr(int me)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "test.c 311: "
+	"void movinvr(int me)\n");
 	int i, j, done, seed1, seed2;
 	ulong *p;
 	ulong *pe;
@@ -494,6 +504,8 @@ void movinvr(int me)
  */
 void movinv1 (int iter, ulong p1, ulong p2, int me)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "test.c 507: "
+	"void movinv1 (int iter, ulong p1, ulong p2, int me)\n");
 	int i, j, done;
 	ulong *p, *pe, len, *start, *end;
 
@@ -692,6 +704,8 @@ void movinv1 (int iter, ulong p1, ulong p2, int me)
 
 void movinv32(int iter, ulong p1, ulong lb, ulong hb, int sval, int off,int me)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "test.c 705: "
+	"void movinv32(int iter, ulong p1, ulong lb, ulong hb, int sval, int off,int me)\n");
 	int i, j, k=0, n=0, done;
 	ulong *p, *pe, *start, *end, pat = 0, p3;
 
@@ -984,6 +998,8 @@ void movinv32(int iter, ulong p1, ulong lb, ulong hb, int sval, int off,int me)
  */
 void modtst(int offset, int iter, ulong p1, ulong p2, int me)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "test.c 1001: "
+	"void modtst(int offset, int iter, ulong p1, ulong p2, int me)\n");
 	int j, k, l, done;
 	ulong *p;
 	ulong *pe;
@@ -1174,6 +1190,8 @@ void modtst(int offset, int iter, ulong p1, ulong p2, int me)
  */
 void block_move(int iter, int me)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "test.c 1193: "
+	"void block_move(int iter, int me)\n");
 	int i, j, done;
 	ulong len;
 	ulong *p, *pe, pp;
@@ -1412,6 +1430,8 @@ void block_move(int iter, int me)
  */
 void bit_fade_fill(ulong p1, int me)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "test.c 1433: "
+	"void bit_fade_fill(ulong p1, int me)\n");
 	int j, done;
 	ulong *p, *pe;
 	ulong *start,*end;
@@ -1454,6 +1474,8 @@ void bit_fade_fill(ulong p1, int me)
 
 void bit_fade_chk(ulong p1, int me)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "test.c 1477: "
+	"void bit_fade_chk(ulong p1, int me)\n");
 	int j, done;
 	ulong *p, *pe, bad;
 	ulong *start,*end;
@@ -1499,6 +1521,8 @@ void bit_fade_chk(ulong p1, int me)
 /* Sleep for N seconds */
 void sleep(long n, int flag, int me, int sms)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "test.c 1524: "
+	"void sleep(long n, int flag, int me, int sms)\n");
 	ulong sh, sl, l, h, t, ip=0;
 
 	/* save the starting time */
@@ -1547,7 +1571,8 @@ void sleep(long n, int flag, int me, int sms)
 
 void beep(unsigned int frequency)
 {
-
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "test.c 1574: "
+	"void beep(unsigned int frequency)\n");
 	unsigned int count = 1193180 / frequency;
 
 	// Switch on the speaker

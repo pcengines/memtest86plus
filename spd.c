@@ -34,6 +34,8 @@ char s[] = {'/', 0, '-', 0, '\\', 0, '|', 0};
 
 static void ich5_get_smb(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "spd.c 37: "
+	"void ich5_get_smb(void)\n");
     unsigned long x;
     int result;
     result = pci_conf_read(0, smbdev, smbfun, 0x20, 2, &x);
@@ -42,6 +44,8 @@ static void ich5_get_smb(void)
 
 static void piix4_get_smb(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "spd.c 47: "
+	"void piix4_get_smb(void)\n");
     unsigned long x;
     int result;
 
@@ -59,6 +63,8 @@ static void piix4_get_smb(void)
 
 void sb800_get_smb(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "spd.c 66: "
+	"void sb800_get_smb(void)\n");
 	  int lbyte, hbyte;
 
 		__outb(AMD_SMBUS_BASE_REG + 1, AMD_INDEX_IO_PORT);
@@ -76,6 +82,8 @@ void sb800_get_smb(void)
 
 unsigned char ich5_smb_read_byte(unsigned char adr, unsigned char cmd)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "spd.c 85: "
+	"unsigned char ich5_smb_read_byte(unsigned char adr, unsigned char cmd)\n");
     int l1, h1, l2, h2;
     uint64_t t;
     uint64_t toval = 10 * v->clks_msec;
@@ -98,6 +106,8 @@ unsigned char ich5_smb_read_byte(unsigned char adr, unsigned char cmd)
 
 static int ich5_read_spd(int dimmadr)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "spd.c 109: "
+	"int ich5_read_spd(int dimmadr)\n");
     int x;
     spd_raw[0] = ich5_smb_read_byte(0x50 + dimmadr, 0);
     if (spd_raw[0] == 0xff)	return -1;		// no spd here
@@ -109,6 +119,8 @@ static int ich5_read_spd(int dimmadr)
 
 static void us15w_get_smb(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "spd.c 122: "
+	"void us15w_get_smb(void)\n");
     unsigned long x;
     int result;
     result = pci_conf_read(0, 0x1f, 0, 0x40, 2, &x);
@@ -117,6 +129,8 @@ static void us15w_get_smb(void)
 
 unsigned char us15w_smb_read_byte(unsigned char adr, unsigned char cmd)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "spd.c 132: "
+	"unsigned char us15w_smb_read_byte(unsigned char adr, unsigned char cmd)\n");
     int l1, h1, l2, h2;
     uint64_t t;
     uint64_t toval = 10 * v->clks_msec;
@@ -143,6 +157,8 @@ unsigned char us15w_smb_read_byte(unsigned char adr, unsigned char cmd)
 
 static int us15w_read_spd(int dimmadr)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "spd.c 160: "
+	"static int us15w_read_spd(int dimmadr)\n");
     int x;
     spd_raw[0] = us15w_smb_read_byte(0x50 + dimmadr, 0);
     if (spd_raw[0] == 0xff)	return -1;		// no spd here
@@ -190,6 +206,8 @@ static struct pci_smbus_controller smbcontrollers[] = {
 
 int find_smb_controller(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "spd.c 209: "
+	"int find_smb_controller(void)\n");
     int i = 0;
     unsigned long valuev, valued;
 
@@ -215,6 +233,8 @@ int find_smb_controller(void)
 
 void get_spd_spec(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "spd.c 236: "
+	"void get_spd_spec(void)\n");
 	  int index;
     int h, i, j, z;
     int k = 0;
@@ -394,6 +414,8 @@ void get_spd_spec(void)
 
 void show_spd(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "spd.c 417: "
+	"void show_spd(void)\n");
     int index;
     int i, j;
     int flag = 0;
@@ -424,6 +446,8 @@ void show_spd(void)
 
 int get_ddr3_module_size(int sdram_capacity, int prim_bus_width, int sdram_width, int ranks)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "spd.c 449: "
+	"int get_ddr3_module_size(int sdram_capacity, int prim_bus_width, int sdram_width, int ranks)\n");
 	int module_size;
 
 	switch(sdram_capacity)
@@ -495,6 +519,8 @@ int get_ddr3_module_size(int sdram_capacity, int prim_bus_width, int sdram_width
 
 int get_ddr2_module_size(int rank_density_byte, int rank_num_byte)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "spd.c 522: "
+	"int get_ddr2_module_size(int rank_density_byte, int rank_num_byte)\n");
 	int module_size;
 
 	switch(rank_density_byte)
@@ -540,6 +566,8 @@ struct ascii_map {
 
 
 char* convert_hex_to_char(unsigned hex_org) {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "spd.c 569: "
+	"char* convert_hex_to_char(unsigned hex_org)\n");
         static char buf[2] = " ";
         if (hex_org >= 0x20 && hex_org < 0x80) {
                 buf[0] = hex_org;

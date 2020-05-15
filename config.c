@@ -32,6 +32,8 @@ char pop_save_buffer_2[2][POP2_H][POP2_W];
 
 void get_config(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "config.c 35: "
+	"void get_config(void)\n");
 	int flag = 0, sflag = 0, i, j, k, n, m, prt = 0;
 	int reprint_screen = 0;
 	char cp[64];
@@ -387,6 +389,8 @@ void get_config(void)
 
 void popup(int pop_x, int pop_y, int pop_h, int pop_w, char pop_save_buffer[2][pop_h][pop_w])
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "config.c 392: "
+	"void popup(int pop_x, int pop_y, int pop_h, int pop_w, char pop_save_buffer[2][pop_h][pop_w])\n");
 	int i, j;
 	char *pp;
 
@@ -413,6 +417,8 @@ void popup(int pop_x, int pop_y, int pop_h, int pop_w, char pop_save_buffer[2][p
 
 void popdown(int pop_x, int pop_y, int pop_h, int pop_w, char pop_save_buffer[2][pop_h][pop_w])
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "config.c 420: "
+	"void popdown(int pop_x, int pop_y, int pop_h, int pop_w, char pop_save_buffer[2][pop_h][pop_w])\n");
 	int i, j;
 	char *pp;
 
@@ -432,6 +438,8 @@ void popdown(int pop_x, int pop_y, int pop_h, int pop_w, char pop_save_buffer[2]
 
 void popclear(int pop_x, int pop_y, int pop_h, int pop_w, char pop_save_buffer[2][pop_h][pop_w])
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "config.c 441: "
+	"void popclear(int pop_x, int pop_y, int pop_h, int pop_w, char pop_save_buffer[2][pop_h][pop_w])\n");
 	int i, j;
 	char *pp;
 
@@ -450,6 +458,8 @@ void popclear(int pop_x, int pop_y, int pop_h, int pop_w, char pop_save_buffer[2
 
 void adj_mem(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "config.c 461: "
+	"void adj_mem(void)\n");
 	int i;
 
 	v->selected_pages = 0;

@@ -33,6 +33,8 @@ static int syn, chan, len=1;
  */
 void error(ulong *adr, ulong good, ulong bad)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "error.c 36: "
+	"void error(ulong *adr, ulong good, ulong bad)\n");
 	ulong xor;
 
 	xor = good ^ bad;
@@ -76,6 +78,8 @@ void error(ulong *adr, ulong good, ulong bad)
  */
 void ad_err1(ulong *adr1, ulong *mask, ulong bad, ulong good)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "error.c 81: "
+	"void ad_err1(ulong *adr1, ulong *mask, ulong bad, ulong good)\n");
 	spin_lock(&barr->mutex);
 	common_err(adr1, good, bad, (ulong)mask, 1);
 	spin_unlock(&barr->mutex);
@@ -88,6 +92,8 @@ void ad_err1(ulong *adr1, ulong *mask, ulong bad, ulong good)
  */
 void ad_err2(ulong *adr, ulong bad)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "error.c 95: "
+	"void ad_err2(ulong *adr, ulong bad)\n");
 	spin_lock(&barr->mutex);
 	common_err(adr, (ulong)adr, bad, ((ulong)adr) ^ bad, 0);
 	spin_unlock(&barr->mutex);
@@ -95,6 +101,8 @@ void ad_err2(ulong *adr, ulong bad)
 
 static void update_err_counts(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "error.c 104: "
+	"void update_err_counts(void)\n");
 	if (beepmode) {
 		beep(600);
 		beep(1000);
@@ -110,6 +118,8 @@ static void update_err_counts(void)
 
 static void print_err_counts(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "error.c 121: "
+	"void print_err_counts(void)\n");
 	int i;
 	char *pp;
 
@@ -137,6 +147,8 @@ static void print_err_counts(void)
  */
 void common_err( ulong *adr, ulong good, ulong bad, ulong xor, int type)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "error.c 150: "
+	"void common_err( ulong *adr, ulong good, ulong bad, ulong xor, int type)\n");
 	int i, j, n, x, flag=0;
 	ulong page, offset;
 	int patnchg;
@@ -391,6 +403,9 @@ void common_err( ulong *adr, ulong good, ulong bad, ulong xor, int type)
 void print_ecc_err(unsigned long page, unsigned long offset,
                    int corrected, unsigned short syndrome, int channel)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "error.c 406: "
+	"void print_ecc_err(unsigned long page, unsigned long offset, "
+                   "int corrected, unsigned short syndrome, int channel)\n");
 	++(v->ecc_ecount);
 	syn = syndrome;
 	chan = channel;
@@ -403,6 +418,8 @@ void print_ecc_err(unsigned long page, unsigned long offset,
  */
 void parity_err( unsigned long edi, unsigned long esi)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "error.c 421: "
+	"void parity_err( unsigned long edi, unsigned long esi)\n");
 	unsigned long addr;
 
 	if (test == 5) {
@@ -419,6 +436,8 @@ void parity_err( unsigned long edi, unsigned long esi)
  */
 void printpatn (void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "error.c 439: "
+	"void printpatn (void)\n");
 	int idx=0;
 	int x;
 
@@ -456,6 +475,8 @@ char spin[4] = {'|', '/', '-', '\\'};
 
 void do_tick(int me)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "error.c 478: "
+	"void do_tick(int me)\n");
 	int i, j, pct;
 	ulong h, l, n, t;
 	extern int mstr_cpu;

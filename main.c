@@ -101,6 +101,7 @@ volatile static struct pmap winx;  	/* Window struct for mapping windows */
 /* Find the next selected test to run */
 void next_test(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "main.c 104 : void next_test(void)\n");
 	test++;
 	while (tseq[test].sel == 0 && tseq[test].cpu_sel != 0) {
 		test++;
@@ -120,6 +121,7 @@ void next_test(void)
 /* Set default values for all parameters */
 void set_defaults(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "main.c 124 : void set_defaults(void)\n");
 	int i;
 
 	if (start_seq == 2) {
@@ -175,6 +177,8 @@ void set_defaults(void)
 short tidx = 25;
 void btrace(int me, int line, char *msg, int wait, long v1, long v2)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "main.c 180 : "
+	"void btrace(int me, int line, char *msg, int wait, long v1, long v2)\n");
 	int y, x;
 
 	/* Is tracing turned on? */
@@ -205,6 +209,8 @@ void btrace(int me, int line, char *msg, int wait, long v1, long v2)
 /* Relocate the test to a new address. Be careful to not overlap! */
 static void run_at(unsigned long addr, int cpu)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "main.c 212 : "
+	"void run_at(unsigned long addr, int cpu)\n");
 	ulong *ja = (ulong *)(addr + startup_32 - _start);
 
 	/* CPU 0, Copy memtest86+ code */
@@ -233,6 +239,8 @@ static void run_at(unsigned long addr, int cpu)
 static void
 switch_to_main_stack(unsigned cpu_num)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "main.c 242 : "
+	"void switch_to_main_stack(unsigned cpu_num)\n");
 	extern uintptr_t boot_stack;
 	extern uintptr_t boot_stack_top;
 	uintptr_t *src, *dst;
@@ -260,6 +268,8 @@ switch_to_main_stack(unsigned cpu_num)
 
 void reloc_internal(int cpu)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "main.c 271: "
+	"void reloc_internal(int cpu)\n");
 	/* clear variables */
 	reloc_pending = FALSE;
 
@@ -268,6 +278,8 @@ void reloc_internal(int cpu)
 
 void reloc(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "main.c 281: "
+	"void reloc(void)\n");
 	bail++;
 	reloc_pending = TRUE;
 }
@@ -280,6 +292,8 @@ void reloc(void)
 
 static void parse_command_line(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "main.c 295: "
+	"void parse_command_line(void)\n");
 	long simple_strtoul(char *cmd, char *ptr, int base);
 	char *cp, dummy;
 	int i, j, k;
@@ -379,6 +393,8 @@ static void parse_command_line(void)
 
 void clear_screen(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "main.c 396: "
+	"void clear_screen(void)\n");
 	int i;
 	char *pp;
 
@@ -540,7 +556,6 @@ void test_start(void)
 
 	/* Loop through all tests */
 	while (1) {
-		cprint_tty(15,5, DEBUG_SERIAL_TTY, "@#@#@#@ DEBUG PRINT in loop 1@#@#@#@");
 		/* If the restart flag is set all initial params */
 		if (restart_flag) {
 			set_defaults();
@@ -785,6 +800,8 @@ void test_start(void)
 
 void test_setup(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "main.c 803: "
+	"void test_setup(void)\n");
 	static int ltest = -1;
 
 	/* See if a specific test has been selected */
@@ -825,6 +842,8 @@ static ulong sp1, sp2;
 
 int do_test(int my_ord)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "main.c 845: "
+	"int do_test(int my_ord)\n");
 	int i=0, j=0;
 	static int bitf_sleep;
 	unsigned long p0=0, p1=0, p2=0;
@@ -1043,6 +1062,8 @@ int do_test(int my_ord)
 /* Compute number of SPINSZ chunks being tested */
 int find_chunks(int tst)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "main.c 1065: "
+	"int find_chunks(int tst)\n");
 	int i, j, sg, wmax, ch;
 	struct pmap twin={0, 0};
 	unsigned long wnxt = WIN_SZ;
@@ -1101,6 +1122,8 @@ int find_chunks(int tst)
 /* Compute the total number of ticks per pass */
 void find_ticks_for_pass(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "main.c 1125: "
+	"void find_ticks_for_pass(void)\n");
 	int i;
 
 	v->pptr = 0;
@@ -1121,6 +1144,8 @@ void find_ticks_for_pass(void)
 
 static int find_ticks_for_test(int tst)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "main.c 1147: "
+	"int find_ticks_for_test(int tst)\n");
 	int ticks=0, c, ch;
 
 	if (tseq[tst].sel == 0) {
@@ -1189,6 +1214,8 @@ static int find_ticks_for_test(int tst)
 
 static int compute_segments(struct pmap win, int me)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "main.c 1218: "
+	"int compute_segments(struct pmap win, int me)\n");
 	unsigned long wstart, wend;
 	int i, sg;
 

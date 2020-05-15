@@ -77,6 +77,8 @@ static struct ecc_info {
 
 void coretemp(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 80: "
+	"void coretemp(void)\n");
 	unsigned int msrl, msrh;
 	unsigned int tjunc, tabs, tnow;
 	unsigned long rtcr;
@@ -94,7 +96,7 @@ void coretemp(void)
 			tabs = ((msrl >> 16) & 0x7F);
 			rdmsr(MSR_IA32_TEMPERATURE_TARGET, msrl, msrh);
 			tjunc = ((msrl >> 16) & 0x7F);
-			if (tjunc < 50 || tjunc > 125) { tjunc = 90; } // assume Tjunc = 90°C if boggus value received.
+			if (tjunc < 50 || tjunc > 125) { tjunc = 90; } // assume Tjunc = 90ï¿½C if boggus value received.
 			tnow = tjunc - tabs;
 			dprint(LINE_CPU+1, 30, v->check_temp, 3, 0);
 			v->check_temp = tnow;
@@ -113,6 +115,8 @@ void coretemp(void)
 
 void print_cpu_line(float dram_freq, float fsb_freq, int ram_type)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 118: "
+	"void print_cpu_line(float dram_freq, float fsb_freq, int ram_type)\n");
 	int cur_col = COL_SPEC;
 
 	cprint(LINE_CPU, cur_col, "RAM:                                ");
@@ -158,6 +162,8 @@ void print_cpu_line(float dram_freq, float fsb_freq, int ram_type)
 
 void print_ram_line(float cas, int rcd, int rp, int ras, int chan)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 165: "
+	"void print_ram_line(float cas, int rcd, int rp, int ras, int chan)\n");
 	int cur_col = COL_SPEC;
 
 	cprint(LINE_RAM, cur_col, "Timings: CAS                        ");
@@ -225,6 +231,8 @@ void print_ram_line(float cas, int rcd, int rp, int ras, int chan)
 
 static void poll_fsb_nothing(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 234: "
+	"void poll_fsb_nothing(void)\n");
 	char *name;
 
 	/* Print the controller name */
@@ -236,6 +244,8 @@ static void poll_fsb_nothing(void)
 
 static void poll_timings_nothing(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 247: "
+	"void poll_timings_nothing(void)\n");
 	char *ram_type;
 
 	/* Print the controller name */
@@ -247,12 +257,16 @@ static void poll_timings_nothing(void)
 
 static void setup_nothing(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 260: "
+	"void setup_nothing(void)\n");
 	ctrl.cap = ECC_NONE;
 	ctrl.mode = ECC_NONE;
 }
 
 static void poll_nothing(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 268: "
+	"void poll_nothing(void)\n");
 /* Code to run when we don't know how, or can't ask the memory
  * controller about memory errors.
  */
@@ -261,6 +275,8 @@ static void poll_nothing(void)
 
 static void setup_wmr(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 278: "
+	"void setup_wmr(void)\n");
 	ulong dev0;
 
 	// Activate MMR I/O
@@ -273,6 +289,8 @@ static void setup_wmr(void)
 
 static void setup_nhm(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 292: "
+	"void setup_nhm(void)\n");
 	static float possible_nhm_bus[] = {0xFF, 0x7F, 0x3F};
 	unsigned long did, vid, mc_control, mc_ssrcontrol;
 	int i;
@@ -308,6 +326,8 @@ static void setup_nhm(void)
 
 static void setup_nhm32(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 329: "
+	"void setup_nhm32(void)\n");
 	static float possible_nhm_bus[] = {0xFF, 0x7F, 0x3F};
 	unsigned long did, vid, mc_control, mc_ssrcontrol;
 	int i;
@@ -341,6 +361,8 @@ static void setup_nhm32(void)
 
 static void setup_amd64(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 364: "
+	"void setup_amd64(void)\n");
 	static const int ddim[] = { ECC_NONE, ECC_CORRECT, ECC_RESERVED, ECC_CHIPKILL };
 	unsigned long nbxcfg;
 	unsigned int mcgsrl;
@@ -393,6 +415,8 @@ static void setup_amd64(void)
 
 static void setup_k10(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 418: "
+	"void setup_k10(void)\n");
 	static const int ddim[] = { ECC_NONE, ECC_CORRECT, ECC_CHIPKILL, ECC_CHIPKILL };
 	unsigned long nbxcfg;
 	unsigned int mcgsrl;
@@ -430,6 +454,8 @@ static void setup_k10(void)
 
 static void setup_apu(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 456: "
+	"void setup_apu(void)\n");
 	ulong msr_low, msr_high;
 
 	/* Enable ECS */
@@ -490,6 +516,8 @@ static void poll_amd64(void)
 
 static void setup_amd751(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 519: "
+	"void setup_amd751(void)\n");
 	unsigned long dram_status;
 
 	/* Fill in the correct memory capabilites */
@@ -549,6 +577,8 @@ static void setup_i85x(void)
 
 static void setup_amd76x(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 580: "
+	"void setup_amd76x(void)\n");
 	static const int ddim[] = { ECC_NONE, ECC_DETECT, ECC_CORRECT, ECC_CORRECT };
 	unsigned long ecc_mode_status;
 
@@ -607,6 +637,8 @@ static void poll_amd76x(void)
 
 static void setup_cnb20(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 640: "
+	"void setup_cnb20(void)\n");
 	/* Fill in the correct memory capabilites */
 	ctrl.cap = ECC_CORRECT;
 
@@ -617,6 +649,8 @@ static void setup_cnb20(void)
 
 static void setup_E5400(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 652: "
+	"void setup_E5400(void)\n");
 	unsigned long mcs;
 
 
@@ -641,6 +675,8 @@ static void setup_E5400(void)
 
 static void setup_iE7xxx(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 678: "
+	"void setup_iE7xxx(void)\n");
 	unsigned long mchcfgns;
 	unsigned long drc;
 	unsigned long device;
@@ -689,6 +725,8 @@ static void setup_iE7xxx(void)
 
 static void setup_iE7520(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 728: "
+	"void setup_iE7520(void)\n");
 	unsigned long mchscrb;
 	unsigned long drc;
 	unsigned long dvnp1;
@@ -779,6 +817,8 @@ static void poll_iE7xxx(void)
 
 static void setup_i440gx(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 820: "
+	"void setup_i440gx(void)\n");
 	static const int ddim[] = { ECC_NONE, ECC_DETECT, ECC_CORRECT, ECC_CORRECT };
 	unsigned long nbxcfg;
 
@@ -824,6 +864,8 @@ static void poll_i440gx(void)
 
 static void setup_i840(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 868: "
+	"void setup_i840(void)\n");
 	static const int ddim[] = { ECC_NONE, ECC_RESERVED, ECC_CORRECT, ECC_CORRECT };
 	unsigned long mchcfg;
 
@@ -869,6 +911,8 @@ static void poll_i840(void)
 
 static void setup_i875(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 914: "
+	"void setup_i875(void)\n");
 	long *ptr;
 	ulong dev0, dev6;
 
@@ -898,6 +942,8 @@ static void setup_i875(void)
 
 static void setup_i925(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 945: "
+	"void setup_i925(void)\n");
 	// Activate MMR I/O
 	ulong dev0, drc;
 	unsigned long tolm;
@@ -932,6 +978,8 @@ static void setup_i925(void)
 
 static void setup_p35(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 981: "
+	"void setup_p35(void)\n");
 	// Activate MMR I/O
 	ulong dev0, capid0;
 
@@ -1006,6 +1054,8 @@ static void poll_i875(void)
 
 static void setup_i845(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 1057: "
+	"void setup_i845(void)\n");
 	static const int ddim[] = { ECC_NONE, ECC_RESERVED, ECC_CORRECT, ECC_RESERVED };
 	unsigned long drc;
 
@@ -1049,6 +1099,8 @@ static void poll_i845(void)
 
 static void setup_i820(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 1102: "
+	"void setup_i820(void)\n");
 	static const int ddim[] = { ECC_NONE, ECC_RESERVED, ECC_CORRECT, ECC_CORRECT };
 	unsigned long mchcfg;
 
@@ -1088,6 +1140,8 @@ static void poll_i820(void)
 
 static void setup_i850(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 1143: "
+	"void setup_i850(void)\n");
 	static const int ddim[] = { ECC_NONE, ECC_RESERVED, ECC_CORRECT, ECC_RESERVED };
 	unsigned long mchcfg;
 
@@ -1131,6 +1185,8 @@ static void poll_i850(void)
 
 static void setup_i860(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 1188: "
+	"void setup_i860(void)\n");
 	static const int ddim[] = { ECC_NONE, ECC_RESERVED, ECC_CORRECT, ECC_RESERVED };
 	unsigned long mchcfg;
 	unsigned long errsts;
@@ -1286,6 +1342,8 @@ static float p4model1ratios[] = {16, 17, 18, 19, 20, 21, 22, 23, 8, 9, 10, 11, 1
 
 static float getP4PMmultiplier(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 1345: "
+	"float getP4PMmultiplier(void)\n");
 	//unsigned int msr_lo, msr_hi;
 	int msr_lo, msr_hi;
 	float coef;
@@ -1322,6 +1380,8 @@ static float getP4PMmultiplier(void)
 
 static float getNHMmultiplier(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 1383: "
+	"float getNHMmultiplier(void)\n");
 	unsigned int msr_lo, msr_hi;
 	float coef;
 
@@ -1340,6 +1400,8 @@ static float getNHMmultiplier(void)
 
 static float getSNBmultiplier(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 1403: "
+	"float getSNBmultiplier(void)\n");
 	unsigned int msr_lo, msr_hi;
 	float coef;
 
@@ -1351,6 +1413,8 @@ static float getSNBmultiplier(void)
 
 static void poll_fsb_ct(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 1416: "
+	"void poll_fsb_ct(void)\n");
 	unsigned long mcr, mdr;
 	double dramratio, dramclock, fsb;
 	float coef = getP4PMmultiplier();
@@ -1386,6 +1450,8 @@ static void poll_fsb_ct(void)
 
 static void poll_fsb_amd64(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 1453: "
+	"void poll_fsb_amd64(void)\n");
 	unsigned int mcgsrl;
 	unsigned int mcgsth;
 	unsigned long fid, temp2;
@@ -1475,6 +1541,8 @@ static void poll_fsb_amd64(void)
 
 static void poll_fsb_k10(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 1544: "
+	"void poll_fsb_k10(void)\n");
 	unsigned int mcgsrl;
 	unsigned int mcgsth;
 	unsigned long temp2;
@@ -1552,6 +1620,8 @@ static void poll_fsb_k10(void)
 
 static void poll_fsb_k12(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 1623: "
+	"void poll_fsb_k12(void)\n");
 	unsigned long temp2;
 	unsigned long dramchr;
 	double dramratio, dramclock, fsb, did;
@@ -1631,6 +1701,8 @@ static void poll_fsb_k12(void)
 
 static void poll_fsb_k16(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 1704: "
+	"void poll_fsb_k16(void)\n");
 	unsigned long dramchr;
 	double dramratio, dramclock, fsb;
 
@@ -1676,6 +1748,8 @@ static void poll_fsb_k16(void)
 
 static void poll_fsb_k15(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 1751: "
+	"void poll_fsb_k15(void)\n");
 	unsigned long temp2;
 	unsigned long dramchr;
 	double dramclock, fsb;
@@ -1736,6 +1810,8 @@ static void poll_fsb_k15(void)
 
 static void poll_fsb_k14(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 1813: "
+	"void poll_fsb_k14(void)\n");
 	unsigned long dramchr;
 	double dramratio, dramclock, fsb;
 
@@ -1770,6 +1846,8 @@ static void poll_fsb_k14(void)
 
 static void poll_fsb_i925(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 1849: "
+	"void poll_fsb_i925(void)\n");
 	double dramclock, dramratio, fsb;
 	unsigned long mchcfg, mchcfg2, dev0, drc, idetect;
 	float coef = getP4PMmultiplier();
@@ -1825,6 +1903,8 @@ static void poll_fsb_i925(void)
 
 static void poll_fsb_i945(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 1906: "
+	"void poll_fsb_i945(void)\n");
 	double dramclock, dramratio, fsb;
 	unsigned long mchcfg, dev0;
 	float coef = getP4PMmultiplier();
@@ -1855,6 +1935,8 @@ static void poll_fsb_i945(void)
 
 static void poll_fsb_i945gme(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 1938: "
+	"void poll_fsb_i945gme(void)\n");
 	double dramclock, dramratio, fsb;
 	unsigned long mchcfg, dev0, fsb_mch;
 	float coef = getP4PMmultiplier();
@@ -1912,6 +1994,8 @@ static void poll_fsb_i945gme(void)
 
 static void poll_fsb_i975(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 1997: "
+	"void poll_fsb_i975(void)\n");
 	double dramclock, dramratio, fsb;
 	unsigned long mchcfg, dev0, fsb_mch;
 	float coef = getP4PMmultiplier();
@@ -1970,6 +2054,8 @@ static void poll_fsb_i975(void)
 
 static void poll_fsb_i965(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 2057: "
+	"void poll_fsb_i965(void)\n");
 	double dramclock, dramratio, fsb;
 	unsigned long mchcfg, dev0, fsb_mch;
 	float coef = getP4PMmultiplier();
@@ -2052,6 +2138,8 @@ static void poll_fsb_i965(void)
 
 static void poll_fsb_p35(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 2141: "
+	"void poll_fsb_p35(void)\n");
 	double dramclock, dramratio, fsb;
 	unsigned long mchcfg, dev0, fsb_mch, Device_ID, Memory_Check, c0ckectrl, offset;
 	float coef = getP4PMmultiplier();
@@ -2170,6 +2258,8 @@ static void poll_fsb_p35(void)
 
 static void poll_fsb_im965(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 2261: "
+	"void poll_fsb_im965(void)\n");
 	double dramclock, dramratio, fsb;
 	unsigned long mchcfg, dev0, fsb_mch;
 	float coef = getP4PMmultiplier();
@@ -2237,6 +2327,8 @@ static void poll_fsb_im965(void)
 
 static void poll_fsb_5400(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 2330: "
+	"void poll_fsb_5400(void)\n");
 	double dramclock, dramratio, fsb;
 	unsigned long ambase_low, ambase_high, ddrfrq;
 	float coef = getP4PMmultiplier();
@@ -2277,6 +2369,8 @@ static void poll_fsb_5400(void)
 
 static void poll_fsb_nf4ie(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 2372: "
+	"void poll_fsb_nf4ie(void)\n");
 	double dramclock, dramratio, fsb;
 	float mratio, nratio;
 	unsigned long reg74, reg60;
@@ -2309,6 +2403,8 @@ static void poll_fsb_nf4ie(void)
 
 static void poll_fsb_i875(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 2406: "
+	"void poll_fsb_i875(void)\n");
 	double dramclock, dramratio, fsb;
 	unsigned long mchcfg, smfs;
 	float coef = getP4PMmultiplier();
@@ -2342,6 +2438,8 @@ static void poll_fsb_i875(void)
 
 static void poll_fsb_p4(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 2441: "
+	"void poll_fsb_p4(void)\n");
 	ulong fsb, idetect;
 	float coef = getP4PMmultiplier();
 	char *name;
@@ -2379,6 +2477,8 @@ static void poll_fsb_p4(void)
 
 static void poll_fsb_i855(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 2480: "
+	"void poll_fsb_i855(void)\n");
 	double dramclock, dramratio, fsb;
 	unsigned int msr_lo, msr_hi;
 	ulong mchcfg, idetect;
@@ -2427,6 +2527,8 @@ static void poll_fsb_i855(void)
 
 static void poll_fsb_amd32(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 2530: "
+	"void poll_fsb_amd32(void)\n");
 	unsigned int mcgsrl;
 	unsigned int mcgsth;
 	unsigned long temp;
@@ -2471,6 +2573,8 @@ static void poll_fsb_amd32(void)
 
 static void poll_fsb_nf2(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 2576: "
+	"void poll_fsb_nf2(void)\n");
 	unsigned int mcgsrl;
 	unsigned int mcgsth;
 	unsigned long temp, mempll;
@@ -2508,6 +2612,8 @@ static void poll_fsb_nf2(void)
 
 static void poll_fsb_us15w(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 2615: "
+	"void poll_fsb_us15w(void)\n");
 	double dramclock, dramratio, fsb;
 	unsigned long msr;
 
@@ -2560,6 +2666,8 @@ static void poll_fsb_us15w(void)
 
 static void poll_fsb_nhm(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 2669: "
+	"void poll_fsb_nhm(void)\n");
 	double dramclock, dramratio, fsb;
 	unsigned long mc_dimm_clk_ratio;
 	float coef = getNHMmultiplier();
@@ -2603,6 +2711,8 @@ static void poll_fsb_nhm(void)
 
 static void poll_fsb_nhm32(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 2714: "
+	"void poll_fsb_nhm32(void)\n");
 	double dramclock, dramratio, fsb;
 	unsigned long mc_dimm_clk_ratio;
 	float coef = getNHMmultiplier();
@@ -2645,6 +2755,8 @@ static void poll_fsb_nhm32(void)
 
 static void poll_fsb_wmr(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 2758: "
+	"void poll_fsb_wmr(void)\n");
 	double dramclock, dramratio, fsb;
 	unsigned long dev0;
 	float coef = getNHMmultiplier();
@@ -2669,6 +2781,8 @@ static void poll_fsb_wmr(void)
 
 static void poll_fsb_snb(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 2784: "
+	"void poll_fsb_snb(void)\n");
 	double dramclock, dramratio, fsb;
 	unsigned long dev0;
 	float coef = getSNBmultiplier();
@@ -2694,6 +2808,8 @@ static void poll_fsb_snb(void)
 
 static void poll_fsb_ivb(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 2811: "
+	"void poll_fsb_ivb(void)\n");
 	double dramclock, dramratio, fsb;
 	unsigned long dev0, mchcfg;
 	float coef = getSNBmultiplier();
@@ -2727,6 +2843,8 @@ static void poll_fsb_ivb(void)
 
 static void poll_fsb_snbe(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 2846: "
+	"void poll_fsb_snbe(void)\n");
 	double dramclock, dramratio, fsb;
 	unsigned long dev0;
 	float coef = getSNBmultiplier();
@@ -2752,6 +2870,8 @@ static void poll_fsb_snbe(void)
 
 static void poll_timings_nf4ie(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 2873: "
+	"void poll_timings_nf4ie(void)\n");
 	ulong regd0, reg8c, reg9c, reg80;
 	int cas, rcd, rp, ras, chan;
 
@@ -2777,6 +2897,8 @@ static void poll_timings_nf4ie(void)
 
 static void poll_timings_i875(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 2900: "
+	"void poll_timings_i875(void)\n");
 	ulong dev6;
 	ulong temp;
 	float cas;
@@ -2824,6 +2946,8 @@ static void poll_timings_i875(void)
 
 static void poll_timings_i925(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 2949: "
+	"void poll_timings_i925(void)\n");
 	// Thanks for CDH optis
 	float cas;
 	int rcd, rp, ras, chan;
@@ -2887,6 +3011,8 @@ static void poll_timings_i925(void)
 
 static void poll_timings_i965(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 3014: "
+	"void poll_timings_i965(void)\n");
 	// Thanks for CDH optis
 	ulong dev0, c0ckectrl, c1ckectrl, offset;
 	ulong ODT_Control_Register, Precharge_Register, ACT_Register, Read_Register;
@@ -2943,6 +3069,8 @@ static void poll_timings_i965(void)
 
 static void poll_timings_im965(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 3072: "
+	"void poll_timings_im965(void)\n");
 	// Thanks for CDH optis
 	ulong dev0, c0ckectrl, c1ckectrl, offset;
 	ulong ODT_Control_Register, Precharge_Register;
@@ -2992,6 +3120,8 @@ static void poll_timings_im965(void)
 
 static void poll_timings_p35(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 3123: "
+	"void poll_timings_p35(void)\n");
 	// Thanks for CDH optis
 	float cas;
 	int rcd, rp, ras, chan;
@@ -3054,6 +3184,8 @@ static void poll_timings_p35(void)
 
 static void poll_timings_wmr(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 3187: "
+	"void poll_timings_wmr(void)\n");
 	float cas;
 	int rcd, rp, ras, chan;
 	ulong dev0, c0ckectrl, c1ckectrl, offset;
@@ -3115,6 +3247,8 @@ static void poll_timings_wmr(void)
 
 static void poll_timings_snb(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 3250: "
+	"void poll_timings_snb(void)\n");
 	float cas;
 	int rcd, rp, ras, chan;
 	ulong dev0, offset;
@@ -3159,6 +3293,8 @@ static void poll_timings_snb(void)
 
 static void poll_timings_hsw(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 3296: "
+	"void poll_timings_hsw(void)\n");
 	float cas;
 	int rcd, rp, ras, chan;
 	ulong dev0, offset = 0;
@@ -3208,6 +3344,8 @@ static void poll_timings_hsw(void)
 
 static void poll_timings_snbe(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 3347: "
+	"void poll_timings_snbe(void)\n");
 	float cas;
 	int rcd, rp, ras;
 	int nb_channel = 0, current_channel = 0;
@@ -3257,6 +3395,8 @@ static void poll_timings_snbe(void)
 
 static void poll_timings_5400(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 3398: "
+	"void poll_timings_5400(void)\n");
 	// Thanks for CDH optis
 	ulong ambase, mtr1, mtr2, offset, mca;
 	long *ptr;
@@ -3310,6 +3450,8 @@ static void poll_timings_5400(void)
 
 static void poll_timings_E7520(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 3453: "
+	"void poll_timings_E7520(void)\n");
 	ulong drt, ddrcsr;
 	float cas;
 	int rcd, rp, ras, chan;
@@ -3334,6 +3476,8 @@ static void poll_timings_E7520(void)
 
 static void poll_timings_i855(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 3479: "
+	"void poll_timings_i855(void)\n");
 	ulong drt, temp;
 	float cas;
 	int rcd, rp, ras = 0;
@@ -3373,6 +3517,8 @@ static void poll_timings_i855(void)
 
 static void poll_timings_E750x(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 3520: "
+	"void poll_timings_E750x(void)\n");
 	ulong drt, drc, temp;
 	float cas;
 	int rcd, rp, ras, chan;
@@ -3400,6 +3546,8 @@ static void poll_timings_E750x(void)
 
 static void poll_timings_i852(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 3549: "
+	"void poll_timings_i852(void)\n");
 	ulong drt, temp;
 	float cas;
 	int rcd, rp, ras;
@@ -3439,6 +3587,8 @@ static void poll_timings_i852(void)
 
 static void poll_timings_amd64(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 3590: "
+	"void poll_timings_amd64(void)\n");
 	ulong dramtlr, dramclr;
 	int temp, chan;
 	float tcas = 0.0;
@@ -3499,6 +3649,8 @@ static void poll_timings_amd64(void)
 
 static void poll_timings_k10(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 3652: "
+	"void poll_timings_k10(void)\n");
 	ulong dramtlr, dramclr, dramchr, dramchrb;
 	ulong offset = 0;
 	int cas, rcd, rp, ras, chan;
@@ -3537,6 +3689,8 @@ static void poll_timings_k10(void)
 
 static void poll_timings_k12(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 3692: "
+	"void poll_timings_k12(void)\n");
 	ulong dramt0 = 0, dramlow = 0, dimma, dimmb;
 	int cas, rcd, rp, ras, chan = 0;
 
@@ -3568,6 +3722,8 @@ static void poll_timings_k12(void)
 
 static void poll_timings_k14(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 3725: "
+	"void poll_timings_k14(void)\n");
 	ulong dramt0, dramlow;
 	int cas, rcd, rp, ras;
 
@@ -3585,6 +3741,8 @@ static void poll_timings_k14(void)
 
 static void poll_timings_k15(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 3744: "
+	"void poll_timings_k15(void)\n");
 	ulong dramp1, dramp2, dimma, dimmb;
 	int cas, rcd, rp, ras, chan = 0;
 
@@ -3605,6 +3763,8 @@ static void poll_timings_k15(void)
 
 static void poll_timings_k16(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 3766: "
+	"void poll_timings_k16(void)\n");
 	ulong dramt0, dramt1;
 	int cas, rcd, rp, ras;
 
@@ -3621,6 +3781,8 @@ static void poll_timings_k16(void)
 
 static void poll_timings_EP80579(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 3784: "
+	"void poll_timings_EP80579(void)\n");
 	ulong drt1, drt2;
 	float cas;
 	int rcd, rp, ras;
@@ -3638,6 +3800,8 @@ static void poll_timings_EP80579(void)
 
 static void poll_timings_nf2(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 3803: "
+	"void poll_timings_nf2(void)\n");
 	ulong dramtlr, dramtlr2, dramtlr3, temp;
 	ulong dimm1p, dimm2p, dimm3p;
 	float cas = 0.0;
@@ -3678,6 +3842,8 @@ static void poll_timings_nf2(void)
 
 static void poll_timings_us15w(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 3845: "
+	"void poll_timings_us15w(void)\n");
 	// Thanks for CDH optis
 	ulong dtr;
 	float cas;
@@ -3702,6 +3868,8 @@ static void poll_timings_us15w(void)
 
 static void poll_timings_nhm(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 3871: "
+	"void poll_timings_nhm(void)\n");
 	ulong mc_channel_bank_timing, mc_control, mc_channel_mrs_value;
 	float cas;
 	int rcd, rp, ras, chan;
@@ -3742,6 +3910,8 @@ static void poll_timings_nhm(void)
 
 static void poll_timings_ct(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 3913: "
+	"void poll_timings_ct(void)\n");
 	unsigned long mcr, mdr;
 	float cas;
 	int rcd, rp, ras;
@@ -3946,6 +4116,8 @@ struct pci_memory_controller controllers[] = {
 
 static void print_memory_controller(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 4119: "
+	"void print_memory_controller(void)\n");
 	/* Print memory controller info */
 	if (ctrl.index == 0) {
 		return;
@@ -4011,6 +4183,8 @@ static void print_memory_controller(void)
 
 void find_controller(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 4186: "
+	"void find_controller(void)\n");
 	unsigned long vendor;
 	unsigned long device;
 	int i;
@@ -4046,6 +4220,8 @@ void find_controller(void)
 
 void poll_errors(void)
 {
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "controller.c 4223: "
+	"void poll_errors(void)\n");
 	if (ctrl.poll) {
 		controllers[ctrl.index].poll_errors();
 	}
