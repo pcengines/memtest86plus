@@ -186,33 +186,49 @@ void addr_tst2(int me)
 {
 	cprint_tty(0,0, DEBUG_SERIAL_TTY, "test.c 187: "
 	"void addr_tst2(int me)\n");
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "#@#@#seg-----> ");
+	hprint3_tty(0,0, DEBUG_SERIAL_TTY, segs, 8);
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, " <------seg\n");
 	int j, done;
 	ulong *p, *pe, *end, *start;
 
         cprint(LINE_PAT, COL_PAT, "address ");
 
 	/* Write each address with it's own address */
+	
 	for (j=0; j<segs; j++) {
 		start = v->map[j].start;
 		end = v->map[j].end;
 		pe = (ulong *)start;
 		p = start;
 		done = 0;
+		cprint_tty(0,0, DEBUG_SERIAL_TTY, "####j-----> ");
+		hprint3_tty(0,0, DEBUG_SERIAL_TTY, (ulong)j, 8);
+		cprint_tty(0,0, DEBUG_SERIAL_TTY, " <------j\n");
+		cprint_tty(0,0, DEBUG_SERIAL_TTY, "####end----->");
+		hprint3_tty(0,0, DEBUG_SERIAL_TTY, (ulong)end, 8);
+		cprint_tty(0,0, DEBUG_SERIAL_TTY, " <------end\n");
 		do {
 			do_tick(me);
 			BAILR;
-
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, "####pe + SPINSZ > pe----->");
+			hprint3_tty(0,0, DEBUG_SERIAL_TTY, (ulong)(pe + SPINSZ > pe), 8);
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, " <------pe + SPINSZ > pe\n");
 			/* Check for overflow */
 			if (pe + SPINSZ > pe && pe != 0) {
+				cprint_tty(0,0, DEBUG_SERIAL_TTY, "####pe += SPINSZ;\n");
 				pe += SPINSZ;
 			} else {
+				cprint_tty(0,0, DEBUG_SERIAL_TTY, "####pe = end;\n");
 				pe = end;
 			}
 			if (pe >= end) {
+				cprint_tty(0,0, DEBUG_SERIAL_TTY, "####done++;\n");
 				pe = end;
 				done++;
 			}
 			if (p == pe ) {
+				cprint_tty(0,0, DEBUG_SERIAL_TTY, "####break;\n");
 				break;
 			}
 
@@ -221,6 +237,16 @@ void addr_tst2(int me)
  *				*p = (ulong)p;
  *			}
  */
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, "####tst2 1asm1 \n");
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, "####done-----> ");
+			hprint3_tty(0,0, DEBUG_SERIAL_TTY, (ulong)done, 8);
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, " <------done\n");
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, "####p-----> ");
+			hprint3_tty(0,0, DEBUG_SERIAL_TTY, (ulong)p, 8);
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, " <------p\n");
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, "####pe-----> ");
+			hprint3_tty(0,0, DEBUG_SERIAL_TTY, (ulong)pe, 8);
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, " <------pe\n");
 			asm __volatile__ (
 				"jmp L91\n\t"
 				".p2align 4,,7\n\t"
@@ -232,10 +258,11 @@ void addr_tst2(int me)
 				"jb L90\n\t"
 				: : "D" (p), "d" (pe)
 			);
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, "####tst2 1asm1 end \n");
 			p = pe + 1;
 		} while (!done);
 	}
-
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "#@#@# between loops \n");
 	/* Each address should have its own address */
 	for (j=0; j<segs; j++) {
 		start = v->map[j].start;
@@ -243,22 +270,36 @@ void addr_tst2(int me)
 		pe = (ulong *)start;
 		p = start;
 		done = 0;
+		cprint_tty(0,0, DEBUG_SERIAL_TTY, "@@@@j-----> ");
+		hprint3_tty(0,0, DEBUG_SERIAL_TTY, (ulong)j, 8);
+		cprint_tty(0,0, DEBUG_SERIAL_TTY, " <------j\n");
+		cprint_tty(0,0, DEBUG_SERIAL_TTY, "@@@@end----->");
+		hprint3_tty(0,0, DEBUG_SERIAL_TTY, (ulong)end, 8);
+		cprint_tty(0,0, DEBUG_SERIAL_TTY, " <------end\n");
 		do {
 			do_tick(me);
 			BAILR;
 
 			/* Check for overflow */
 			if (pe + SPINSZ > pe && pe != 0) {
-                                pe += SPINSZ;
-                        } else {
-                                pe = end;
-                        }
+				cprint_tty(0,0, DEBUG_SERIAL_TTY, "@@@@pe += SPINSZ;\n");
+                pe += SPINSZ;
+								
+            } else {
+				cprint_tty(0,0, DEBUG_SERIAL_TTY, "@@@@pe = end;\n");
+                pe = end;
+								
+            }
 			if (pe >= end) {
+				cprint_tty(0,0, DEBUG_SERIAL_TTY, "@@@@done++;\n");
 				pe = end;
 				done++;
+				
 			}
 			if (p == pe ) {
+				cprint_tty(0,0, DEBUG_SERIAL_TTY, "@@@@break;\n");
 				break;
+				
 			}
 /* Original C code replaced with hand tuned assembly code
  *			for (; p <= pe; p++) {
@@ -266,7 +307,13 @@ void addr_tst2(int me)
  *					ad_err2((ulong)p, bad);
  *				}
  *			}
- */
+ */			cprint_tty(0,0, DEBUG_SERIAL_TTY, "  tst2 2asm2 \n");
+ 			cprint_tty(0,0, DEBUG_SERIAL_TTY, "@@@@p-----> ");
+			hprint3_tty(0,0, DEBUG_SERIAL_TTY, (ulong)p, 8);
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, " <------p\n");
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, "@@@@pe-----> ");
+			hprint3_tty(0,0, DEBUG_SERIAL_TTY, (ulong)pe, 8);
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, " <------pe\n");
 			asm __volatile__ (
 				"jmp L95\n\t"
 				".p2align 4,,7\n\t"
@@ -295,9 +342,11 @@ void addr_tst2(int me)
 				: : "D" (p), "d" (pe)
 				: "ecx"
 			);
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, "@@@@tst2 2asm2 end \n");
 			p = pe + 1;
 		} while (!done);
 	}
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "#@#@# end of tst2 \n");
 }
 
 /*

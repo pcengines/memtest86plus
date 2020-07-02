@@ -131,9 +131,11 @@ void cplace(int y,int x, const char s);
 void hprint(int y,int x, ulong val);
 void hprint2(int y,int x, ulong val, int len);
 void hprint3(int y,int x, ulong val, int len);
+void hprint3_tty(int y,int x, int tty, ulong val, int len);
 void xprint(int y,int x,ulong val);
 void aprint(int y,int x,ulong page);
 void dprint(int y,int x,ulong val,int len, int right);
+void dprint_tty(int y,int x,int tty, ulong val,int len, int right);
 void movinv1(int iter, ulong p1, ulong p2, int cpu);
 void movinvr(int cpu);
 void movinv32(int iter, ulong p1, ulong lb, ulong mb, int sval, int off,

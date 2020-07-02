@@ -85,13 +85,17 @@ void coretemp(void)
 	double amd_raw_temp;
 
 	// Only enable coretemp if IMC is known
-	if (imc_type == 0) { return; }
+	if (imc_type == 0) { 
+		cprint_tty(0,0, DEBUG_SERIAL_TTY, " coretemp  return-\n");
+		return; }
 
 	tnow = 0;
 
 	// Intel  CPU
 	if (cpu_id.vend_id.char_array[0] == 'G' && cpu_id.max_cpuid >= 6) {
+		cprint_tty(0,0, DEBUG_SERIAL_TTY, " coretemp  if11\n");
 		if (cpu_id.dts_pmp & 1) {
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, " coretemp  if22\n");
 			rdmsr(MSR_IA32_THERM_STATUS, msrl, msrh);
 			tabs = ((msrl >> 16) & 0x7F);
 			rdmsr(MSR_IA32_TEMPERATURE_TARGET, msrl, msrh);
@@ -106,6 +110,7 @@ void coretemp(void)
 
 	// AMD CPU
 	if (cpu_id.vend_id.char_array[0] == 'A' && cpu_id.vers.bits.extendedFamily > 0) {
+		cprint_tty(0,0, DEBUG_SERIAL_TTY, " coretemp  if33\n");
 		pci_conf_read(0, 24, 3, 0xA4, 4, &rtcr);
 		amd_raw_temp = ((rtcr >> 21) & 0x7FF);
 		v->check_temp = (int)(amd_raw_temp / 8);

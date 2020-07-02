@@ -213,6 +213,15 @@ static void run_at(unsigned long addr, int cpu)
 	"void run_at(unsigned long addr, int cpu)\n");
 	ulong *ja = (ulong *)(addr + startup_32 - _start);
 
+
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "^!!^addr----> ");
+	hprint3_tty(0,0, DEBUG_SERIAL_TTY, (ulong)addr, 8);
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, " <------addr\n");
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "^!!^size (_end - _start)----> ");
+	hprint3_tty(0,0, DEBUG_SERIAL_TTY, (ulong)(_end - _start), 8);
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, " <------size (_end - _start)\n");
+
+
 	/* CPU 0, Copy memtest86+ code */
 	if (cpu == 0) {
 		memmove((void *)addr, &_start, _end - _start);
@@ -442,6 +451,7 @@ void test_start(void)
 			btrace(my_cpu_num, __LINE__, "Begin     ", 1, 0, 0);
 			/* Find memory size */
 			mem_size(); /* must be called before initialise_cpus(); */
+			
 			/* Fill in the CPUID table */
 			get_cpuid();
 			/* Startup the other CPUs */
@@ -553,7 +563,27 @@ void test_start(void)
 	 * been completed for each CPU. */
 	btrace(my_cpu_num, __LINE__, "Start Done", 1, 0, 0);
 	start_seq = 2;
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, "^^^^msegs-----> ");
+			hprint3_tty(0,0, DEBUG_SERIAL_TTY, (ulong)v->msegs, 8);
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, " <------msegs\n");
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, "^^^^plim_lower-----> ");
+			hprint3_tty(0,0, DEBUG_SERIAL_TTY, (ulong)v->plim_lower, 8);
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, " <------plim_lower\n");
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, "^^^^plim_upper-----> ");
+			hprint3_tty(0,0, DEBUG_SERIAL_TTY, (ulong)v->plim_upper, 8);
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, " <------plim_upper\n");
+			for (int i=0; i< v->msegs; i++) {
+				cprint_tty(0,0, DEBUG_SERIAL_TTY, "^^^^i-----> ");
+				hprint3_tty(0,0, DEBUG_SERIAL_TTY, (ulong)i, 8);
+				cprint_tty(0,0, DEBUG_SERIAL_TTY, " <------i\n");
+				cprint_tty(0,0, DEBUG_SERIAL_TTY, "^^^^pmap[i].start -----> ");
+				hprint3_tty(0,0, DEBUG_SERIAL_TTY, (ulong)v->pmap[i].start, 8);
+				cprint_tty(0,0, DEBUG_SERIAL_TTY, " <------pmap[i].start\n");
+				cprint_tty(0,0, DEBUG_SERIAL_TTY, "^^^^pmap[i].end -----> ");
+				hprint3_tty(0,0, DEBUG_SERIAL_TTY, (ulong)v->pmap[i].end, 8);
+				cprint_tty(0,0, DEBUG_SERIAL_TTY, " <------pmap[i].end\n");
 
+			}
 	/* Loop through all tests */
 	while (1) {
 		/* If the restart flag is set all initial params */
@@ -590,6 +620,8 @@ void test_start(void)
 
 			/* Relocate if required */
 			if (window != 0 && (ulong)&_start != LOW_TEST_ADR) {
+
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, "^^^^ ^^^^ 1 relocate 1\n");
 				btrace(my_cpu_num, __LINE__, "Sched_RelL", 1, 0, 0);
 				run_at(LOW_TEST_ADR, my_cpu_num);
 			}
@@ -597,9 +629,11 @@ void test_start(void)
 				window++;
 			}
 			if (window == 0 && (ulong)&_start == LOW_TEST_ADR) {
+				cprint_tty(0,0, DEBUG_SERIAL_TTY, "^^^^ ^^^^ 2 relocate 2\n");
 				btrace(my_cpu_num, __LINE__, "Sched_RelH", 1, 0, 0);
 				run_at(high_test_adr, my_cpu_num);
 			}
+
 
 			/* Decide which CPU(s) to use */
 			btrace(my_cpu_num, __LINE__, "Sched_CPU0", 1, cpu_sel,
@@ -664,6 +698,7 @@ void test_start(void)
 
 			/* Do we need to exit */
 			if (reloc_pending) {
+				cprint_tty(0,0, DEBUG_SERIAL_TTY, "^^^^ ^^^^ reloc_pending\n");
 				reloc_internal(my_cpu_num);
 			}
 
@@ -694,6 +729,15 @@ void test_start(void)
 				/* Find the memory areas to test */
 				segs = compute_segments(winx, my_cpu_num);
 			}
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, "^^^^window num-----> ");
+			hprint3_tty(0,0, DEBUG_SERIAL_TTY, (ulong)window, 8);
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, " <------window num\n");
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, "^^^^winx.start-----> ");
+			hprint3_tty(0,0, DEBUG_SERIAL_TTY, (ulong)winx.start, 8);
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, " <------winx.start\n");
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, "^^^^winx.end-----> ");
+			hprint3_tty(0,0, DEBUG_SERIAL_TTY, (ulong)winx.end, 8);
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, " <------winx.end\n");
 			s_barrier();
 			btrace(my_cpu_num, __LINE__, "Sched_Win2", 1, segs,
 			       v->map[0].pbase_addr);
@@ -711,6 +755,9 @@ void test_start(void)
 
 			btrace(my_cpu_num, __LINE__, "Strt_Test ", 1, my_cpu_num,
 			       my_cpu_ord);
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, "^^^^my_cpu_ord-----> ");
+			hprint3_tty(0,0, DEBUG_SERIAL_TTY, (ulong)my_cpu_ord, 8);
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, " <------my_cpu_ord\n");
 			do_test(my_cpu_ord);
 			btrace(my_cpu_num, __LINE__, "End_Test  ", 1, my_cpu_num,
 			       my_cpu_ord);
@@ -873,7 +920,17 @@ int do_test(int my_ord)
 		cprint(LINE_RANGE, COL_MID+30, " of ");
 		aprint(LINE_RANGE, COL_MID+34, v->selected_pages);
 	}
-
+	for (i=0; i<segs; i++) {
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, "!!!!i----> ");
+			hprint3_tty(0,0, DEBUG_SERIAL_TTY, (ulong)i, 8);
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, " <------i\n");
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, "!!!!map[i].start-----> ");
+			hprint3_tty(0,0, DEBUG_SERIAL_TTY, (ulong)v->map[i].start, 8);
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, " <------map[i].start\n");
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, "!!!!map[i].end-----> ");
+			hprint3_tty(0,0, DEBUG_SERIAL_TTY, (ulong)v->map[i].end, 8);
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, " <------map[i].end\n");
+	}
 	switch (tseq[test].pat) {
 	/* Do the testing according to the selected pattern */
 
@@ -1224,6 +1281,8 @@ static int compute_segments(struct pmap win, int me)
 	wend = win.end;
 	sg = 0;
 
+	
+
 	/* Now reduce my window to the area of memory I want to test */
 	if (wstart < v->plim_lower) {
 		wstart = v->plim_lower;
@@ -1239,6 +1298,7 @@ static int compute_segments(struct pmap win, int me)
 		unsigned long start, end;
 		start = v->pmap[i].start;
 		end = v->pmap[i].end;
+
 		if (start <= wstart) {
 			start = wstart;
 		}

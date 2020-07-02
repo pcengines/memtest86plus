@@ -79,16 +79,19 @@ void barrier(void)
 void s_barrier(void)
 {
 	if (run_cpus == 1 || v->fail_safe & 3) {
+      cprint_tty(0,0, 1 /*DEBUG_SERIAL_TTY*/, "  s_barrier  return\n");
 		return;
 	}
 	spin_wait(&barr->s_st1);     /* Wait if the barrier is active */
         spin_lock(&barr->s_lck);     /* Get lock for barr struct */
         if (--barr->s_count == 0) {  /* Last process? */
+        cprint_tty(0,0, 1 /*DEBUG_SERIAL_TTY*/, "  s_barrier  if\n");
                 barr->s_st1.slock = 0;   /* Hold up any processes re-entering */
                 barr->s_st2.slock = 1;   /* Release the other processes */
                 barr->s_count++;
                 spin_unlock(&barr->s_lck);
         } else {
+           cprint_tty(0,0, 1 /*DEBUG_SERIAL_TTY*/, "  s_barrier  else\n");
                 spin_unlock(&barr->s_lck);
                 spin_wait(&barr->s_st2);	/* wait for peers to arrive */
                 spin_lock(&barr->s_lck);

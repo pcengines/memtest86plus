@@ -482,33 +482,39 @@ void do_tick(int me)
 	extern int mstr_cpu;
 
 	if (++spin_idx[me] > 3) {
+		cprint_tty(0,0, DEBUG_SERIAL_TTY, "  tick 111 \n");
 		spin_idx[me] = 0;
 	}
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "  tick 222 \n");
 	cplace(8, me+7, spin[spin_idx[me]]);
-
-
+	
+	
 	/* Check for keyboard input */
 	if (me == mstr_cpu) {
+		cprint_tty(0,0, DEBUG_SERIAL_TTY, "  tick 333 \n");
 		check_input();
 	}
 	/* A barrier here holds the other CPUs until the configuration
 	 * changes are done */
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "  tick 444 \n");
 	s_barrier();
-
 	/* Only the first selected CPU does the update */
 	if (me !=  mstr_cpu) {
+		cprint_tty(0,0, DEBUG_SERIAL_TTY, "  tick 555 \n");
 		return;
 	}
 
 	/* FIXME only print serial error messages from the tick handler */
 	if (v->ecount) {
+		cprint_tty(0,0, DEBUG_SERIAL_TTY, "  tick 666 \n");
 		print_err_counts();
 	}
-
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "  tick 777 \n");
 	nticks++;
 	v->total_ticks++;
 
 	if (test_ticks) {
+		cprint_tty(0,0, DEBUG_SERIAL_TTY, "  tick 888 \n");
 		pct = 100*nticks/test_ticks;
 		if (pct > 100) {
 			pct = 100;
@@ -518,15 +524,19 @@ void do_tick(int me)
 	}
 	dprint(2, COL_MID+4, pct, 3, 0);
 	i = (BAR_SIZE * pct) / 100;
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "  tick 999 \n");
 	while (i > v->tptr) {
 		if (v->tptr >= BAR_SIZE) {
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, "  tick AAA \n");
 			break;
 		}
+		cprint_tty(0,0, DEBUG_SERIAL_TTY, "  tick BBB \n");
 		cprint(2, COL_MID+9+v->tptr, "#");
 		v->tptr++;
 	}
 
 	if (v->pass_ticks) {
+		cprint_tty(0,0, DEBUG_SERIAL_TTY, "  tick CCC \n");
 		pct = 100*v->total_ticks/v->pass_ticks;
 		if (pct > 100) {
 			pct = 100;
@@ -534,17 +544,21 @@ void do_tick(int me)
 	} else {
 		pct = 0;
 	}
+	cprint_tty(0,0, DEBUG_SERIAL_TTY, "  tick EEE \n");
 	dprint(1, COL_MID+4, pct, 3, 0);
 	i = (BAR_SIZE * pct) / 100;
 	while (i > v->pptr) {
 		if (v->pptr >= BAR_SIZE) {
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, "  tick FFF \n");
 			break;
 		}
+		cprint_tty(0,0, DEBUG_SERIAL_TTY, "  tick GGG \n");
 		cprint(1, COL_MID+9+v->pptr, "#");
 		v->pptr++;
 	}
 
 	if (v->ecount && v->printmode == PRINTMODE_SUMMARY) {
+		cprint_tty(0,0, DEBUG_SERIAL_TTY, "  tick HHH \n");
 		/* Compute confidence score */
 		pct = 0;
 
@@ -552,11 +566,13 @@ void do_tick(int me)
 		h = v->pmap[v->msegs - 1].end - 0x100;
 		if (v->erri.low_addr.page >  0x100 &&
 		    v->erri.high_addr.page < h) {
+				cprint_tty(0,0, DEBUG_SERIAL_TTY, "  tick III \n");
 			pct += 8;
 		}
 
 		/* Errors for only some tests */
 		if (v->pass) {
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, "  tick JJJ \n");
 			for (i=0, n=0; tseq[i].msg != NULL; i++) {
 				if (tseq[i].errors == 0) {
 					n++;
@@ -564,6 +580,7 @@ void do_tick(int me)
 			}
 			pct += n*3;
 		} else {
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, "  tick KKK \n");
 			for (i=0, n=0; i<test; i++) {
 				if (tseq[i].errors == 0) {
 					n++;
@@ -571,7 +588,7 @@ void do_tick(int me)
 			}
 			pct += n*2;
 		}
-
+		cprint_tty(0,0, DEBUG_SERIAL_TTY, "  tick LLL \n");
 		/* Only some bits in error */
 		n = 0;
 		if (v->erri.ebits & 0xf) n++;
@@ -598,21 +615,26 @@ void do_tick(int me)
 	/* We can't do the elapsed time unless the rdtsc instruction
 	 * is supported
 	 */
+	
 	if (cpu_id.fid.bits.rdtsc) {
+		cprint_tty(0,0, DEBUG_SERIAL_TTY, "  tick MMM \n");
 		asm __volatile__ (
 			"rdtsc" : "=a" (l), "=d" (h));
+		cprint_tty(0,0, DEBUG_SERIAL_TTY, "  tick NNN \n");
 		asm __volatile__ (
 			"subl %2,%0\n\t"
 			"sbbl %3,%1"
 			: "=a" (l), "=d" (h)
 			: "g" (v->startl), "g" (v->starth),
 			  "0" (l), "1" (h));
+		cprint_tty(0,0, DEBUG_SERIAL_TTY, "  tick OOO \n");
 		t = h * ((unsigned)0xffffffff / v->clks_msec) / 1000;
 		t += (l / v->clks_msec) / 1000;
 		i = t % 60;
 		j = i % 10;
 
 		if (j != v->each_sec) {
+			cprint_tty(0,0, DEBUG_SERIAL_TTY, "  tick PPP \n");
 			dprint(LINE_TIME, COL_TIME+9, i % 10, 1, 0);
 			dprint(LINE_TIME, COL_TIME+8, i / 10, 1, 0);
 			t /= 60;
@@ -623,13 +645,14 @@ void do_tick(int me)
 			dprint(LINE_TIME, COL_TIME, t, 4, 0);
 
 			if (v->check_temp > 0 && !(v->fail_safe & 4)) {
+				cprint_tty(0,0, DEBUG_SERIAL_TTY, "  tick QQQ \n");
 				coretemp();
 			}
 			v->each_sec = j;
 		}
 	}
 
-
+cprint_tty(0,0, DEBUG_SERIAL_TTY, "  tick RRR \n");
 
 	/* Poll for ECC errors */
 /*

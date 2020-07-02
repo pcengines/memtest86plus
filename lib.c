@@ -317,6 +317,12 @@ void aprint(int y, int x, ulong page)
  */
 void dprint(int y, int x, ulong val, int len, int right)
 {
+	dprint_tty(y, x, serial_tty, val, len,right);
+}
+
+//Print a decimal number on screen on tty?
+void dprint_tty(int y, int x,  int tty, ulong val, int len, int right)
+{
 	ulong j, k;
 	int i, flag=0;
 	char buf[18];
@@ -367,7 +373,7 @@ void dprint(int y, int x, ulong val, int len, int right)
 		}
 	}
 	buf[i] = 0;
-	cprint(y,x,buf);
+	cprint_tty(y,x,tty,buf);
 }
 
 /*
@@ -405,9 +411,9 @@ void hprint2(int y,int x, unsigned long val, int digits)
 }
 
 /*
- * Print a hex number on screen exactly digits long
+ * Print a hex number on screen exactly digits long using tty?
  */
-void hprint3(int y,int x, unsigned long val, int digits)
+void hprint3_tty(int y,int x, int tty, unsigned long val, int digits)
 {
 	unsigned long j;
 	int i, idx, flag = 0;
@@ -430,7 +436,15 @@ void hprint3(int y,int x, unsigned long val, int digits)
 		}
 	}
 	buf[idx] = 0;
-	cprint(y,x,buf);
+	cprint_tty(y,x,tty,buf);
+}
+
+/*
+ * Print a hex number on screen exactly digits long
+ */
+void hprint3(int y,int x, unsigned long val, int digits)
+{
+	hprint3_tty(y,x,serial_tty,val,digits);
 }
 
 /*
