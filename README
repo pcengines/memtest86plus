@@ -923,3 +923,10 @@ listed below:
 - Major enhancements to hardware detection and reporting in version 3.2,
   3.3 pnd 3.4 rovided by Samuel Demeulemeester (from Memtest86+ v1.11, v1.60
   and v1.70).
+
+
+18) Issues
+==========
+
+If you want to create an issue, [here](https://github.com/pcengines/apu2-documentation/issues)
+is the right place for that.
